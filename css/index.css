@@ -1,0 +1,326 @@
+/* ==========================================
+   1. VARIABLES & RESET
+   ========================================== */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap');
+
+:root {
+    /* Palette de couleurs basée sur ton CV */
+    --color-main: #2e1c16;      /* Chocolat profond */
+    --color-accent: #c98a4b;    /* Caramel / Doré */
+    --color-bg: #faf6f0;        /* Crème / Vanille */
+    --color-white: #ffffff;
+    
+    /* Typographie */
+    --font-heading: 'Playfair Display', serif; /* Élégant pour la pâtisserie */
+    --font-body: 'Lato', sans-serif;           /* Lisible et moderne */
+    
+    /* Espacements et Transitions */
+    --transition-smooth: all 0.3s ease-in-out;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--color-bg);
+    color: var(--color-main);
+    font-family: var(--font-body);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+h1, h2, h3 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: var(--transition-smooth);
+}
+
+/* ==========================================
+   2. EN-TÊTE & NAVIGATION
+   ========================================== */
+header {
+    background-color: var(--color-bg);
+    padding: 1.5rem 5%;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(46, 28, 22, 0.05); /* Ombre très légère */
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.nav-logo a {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-main);
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-links a {
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: var(--color-accent);
+}
+
+/* ==========================================
+   3. HERO HEADER (Accueil)
+   ========================================== */
+#hero {
+    height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 5%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.hero-container {
+    display: flex;
+    align-items: center;
+    gap: 4rem;
+}
+
+.hero-text {
+    flex: 1;
+}
+
+.hero-text h1 {
+    font-size: 3.5rem;
+    line-height: 1.1;
+    color: var(--color-main);
+}
+
+.hero-text p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    color: #555; /* Légèrement plus clair que la couleur principale */
+}
+
+.btn-cta {
+    display: inline-block;
+    background-color: var(--color-accent);
+    color: var(--color-white);
+    padding: 1rem 2rem;
+    font-weight: 700;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-cta:hover {
+    background-color: var(--color-main);
+    transform: translateY(-2px);
+}
+
+.hero-image {
+    flex: 1;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(46, 28, 22, 0.1);
+}
+
+.hero-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* ==========================================
+   4. SECTION À PROPOS
+   ========================================== */
+#about {
+    padding: 6rem 5%;
+    background-color: var(--color-white); /* Contraste subtil avec le fond crème */
+}
+
+.about-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.about-container h2 {
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 3rem;
+    color: var(--color-accent);
+}
+
+.about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+}
+
+.about-content p {
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+}
+
+.about-image img {
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: -15px 15px 0px var(--color-bg); /* Effet de cadre élégant */
+}
+
+/* ==========================================
+   5. GALERIE SIGNATURES
+   ========================================== */
+#gallery {
+    padding: 6rem 5%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+#gallery h2 {
+    font-size: 2.5rem;
+    text-align: center;
+}
+
+.gallery-subtitle {
+    text-align: center;
+    margin-bottom: 4rem;
+    font-style: italic;
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.gallery-item {
+    background-color: var(--color-white);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: var(--transition-smooth);
+    cursor: pointer;
+}
+
+.gallery-item:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(46, 28, 22, 0.15);
+}
+
+.item-image img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-bottom: 3px solid var(--color-accent);
+}
+
+.item-info {
+    padding: 1.5rem;
+}
+
+.item-info h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.item-info p {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* ==========================================
+   6. PIED DE PAGE (FOOTER)
+   ========================================== */
+footer {
+    background-color: var(--color-main);
+    color: var(--color-bg);
+    padding: 4rem 5% 2rem;
+    text-align: center;
+}
+
+.footer-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.footer-contact h3 {
+    color: var(--color-accent);
+}
+
+.email-link {
+    display: inline-block;
+    margin: 1.5rem 0;
+    font-size: 1.2rem;
+    color: var(--color-accent);
+    border-bottom: 1px solid var(--color-accent);
+    padding-bottom: 5px;
+}
+
+.email-link:hover {
+    color: var(--color-white);
+    border-color: var(--color-white);
+}
+
+.footer-socials {
+    margin-bottom: 2rem;
+}
+
+.footer-socials a {
+    margin: 0 1rem;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+.footer-socials a:hover {
+    color: var(--color-accent);
+}
+
+.footer-credits {
+    font-size: 0.8rem;
+    opacity: 0.7;
+    border-top: 1px solid rgba(250, 246, 240, 0.1);
+    padding-top: 2rem;
+}
+
+/* ==========================================
+   7. RESPONSIVE DESIGN (Mobiles & Tablettes)
+   ========================================== */
+@media (max-width: 768px) {
+    .hero-container, .about-grid {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .hero-text h1 {
+        font-size: 2.5rem;
+    }
+    
+    .nav-links {
+        display: none; /* A remplacer par un menu hamburger en JS plus tard */
+    }
+}
