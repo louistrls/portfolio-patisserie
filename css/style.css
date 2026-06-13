@@ -324,3 +324,296 @@ footer {
         display: none; /* A remplacer par un menu hamburger en JS plus tard */
     }
 }
+
+/* Défilement fluide natif */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Menu Hamburger (caché sur Desktop) */
+.hamburger {
+    display: none;
+    cursor: pointer;
+}
+
+.bar {
+    display: block;
+    width: 25px;
+    height: 3px;
+    margin: 5px auto;
+    background-color: var(--color-main);
+    transition: var(--transition-smooth);
+}
+
+/* Responsive Menu (Mobile) */
+@media (max-width: 768px) {
+    .hamburger {
+        display: block;
+    }
+    
+    .nav-links {
+        position: fixed;
+        left: -100%; /* Caché hors de l'écran par défaut */
+        top: 70px;
+        flex-direction: column;
+        background-color: var(--color-bg);
+        width: 100%;
+        text-align: center;
+        transition: 0.3s;
+        box-shadow: 0 10px 10px rgba(0,0,0,0.1);
+    }
+    
+    .nav-links.active {
+        left: 0; /* Apparaît quand la classe active est ajoutée */
+    }
+    
+    .nav-links li {
+        margin: 1.5rem 0;
+    }
+}
+
+/* Préparation des animations au scroll */
+.fade-in {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.fade-in.appear {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ==========================================
+   8. STYLES DES PAGES SECONDAIRES
+   ========================================== */
+
+/* En-tête des pages */
+.page-header {
+    text-align: center;
+    padding: 5rem 5% 3rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.page-header h1 {
+    font-size: 3rem;
+    color: var(--color-main);
+}
+
+.page-header p {
+    font-size: 1.1rem;
+    font-style: italic;
+    color: #666;
+}
+
+/* --- PAGE CRÉATIONS : Fiches détaillées --- */
+.detailed-gallery {
+    padding: 2rem 5% 6rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.creation-card {
+    display: flex;
+    background-color: var(--color-white);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 4rem;
+    box-shadow: 0 10px 30px rgba(46, 28, 22, 0.05);
+    transition: var(--transition-smooth);
+}
+
+.creation-card.invert {
+    flex-direction: row-reverse;
+}
+
+.creation-media {
+    flex: 1;
+    min-height: 350px;
+}
+
+.creation-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.creation-details {
+    flex: 1;
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.badge {
+    align-self: flex-start;
+    background-color: var(--color-bg);
+    color: var(--color-accent);
+    padding: 0.3rem 1rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+    letter-spacing: 1px;
+}
+
+.creation-desc {
+    margin-bottom: 1.5rem;
+    color: #555;
+}
+
+.tech-list {
+    list-style: none;
+}
+
+.tech-list li {
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.tech-list li::before {
+    content: "•";
+    color: var(--color-accent);
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+    font-size: 1.2rem;
+    top: -2px;
+}
+
+/* --- PAGE PARCOURS : Ligne du temps (Timeline) --- */
+.timeline-section {
+    padding: 2rem 5% 6rem;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.timeline-container {
+    position: relative;
+    padding: 2rem 0;
+}
+
+/* La ligne centrale vertical */
+.timeline-container::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 2px;
+    height: 100%;
+    background-color: var(--color-accent);
+    opacity: 0.3;
+    transform: translateX(-50%);
+}
+
+.timeline-item {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 4rem;
+    position: relative;
+}
+
+.timeline-date {
+    width: 45%;
+    text-align: right;
+    padding-right: 2rem;
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-accent);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.timeline-content {
+    width: 45%;
+    background-color: var(--color-white);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+}
+
+.timeline-content h3 {
+    font-size: 1.3rem;
+    margin-bottom: 0.2rem;
+}
+
+.timeline-content h4 {
+    font-size: 0.9rem;
+    color: var(--color-accent);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+}
+
+/* Les puces sur la ligne centrale */
+.timeline-item::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 12px;
+    height: 12px;
+    background-color: var(--color-white);
+    border: 3px solid var(--color-accent);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+}
+
+/* Alternance gauche / droite */
+.timeline-item:nth-child(even) {
+    flex-direction: row-reverse;
+}
+
+.timeline-item:nth-child(even) .timeline-date {
+    text-align: left;
+    padding-left: 2rem;
+    padding-right: 0;
+    justify-content: flex-start;
+}
+
+/* Ajustements Responsive */
+@media (max-width: 768px) {
+    .creation-card, .creation-card.invert {
+        flex-direction: column;
+    }
+    
+    .creation-media {
+        min-height: 250px;
+    }
+    
+    .timeline-container::before {
+        left: 20px;
+    }
+    
+    .timeline-item, .timeline-item:nth-child(even) {
+        flex-direction: column;
+        align-items: flex-start;
+        padding-left: 40px;
+    }
+    
+    .timeline-date, .timeline-item:nth-child(even) .timeline-date {
+        width: 100%;
+        text-align: left;
+        padding: 0 0 0.5rem 0;
+        justify-content: flex-start;
+    }
+    
+    .timeline-content {
+        width: 100%;
+    }
+    
+    .timeline-item::after {
+        left: 20px;
+        top: 20px;
+    }
+}

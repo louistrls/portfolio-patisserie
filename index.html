@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="css/style.css" rel="stylesheet"/>
     <title>Mon Portfolio Pâtisserie | Accueil</title>
     </head>
 <body>
@@ -12,22 +13,30 @@
             <div class="nav-logo">
                 <a href="#">[Mon Nom / Logo]</a>
             </div>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
             <ul class="nav-links">
-                <li><a href="#" class="active">Accueil</a></li>
-                <li><a href="#">Créations</a></li>
-                <li><a href="#">Mon Parcours</a></li>
-                <li><a href="#">Contact</a></li>
+                <li><a href="index.html" class="active">Accueil</a></li>
+                <li><a href="creations.html">Créations</a></li>
+                <li><a href="parcours.html">Mon Parcours</a></li>
+                <li><a href="#contact">Contact</a></li>
             </ul>
         </nav>
     </header>
 
     <main>
 
-        <section id="hero">
+        <section id="hero" class="fade-in">
             <div class="hero-container">
                 <div class="hero-text">
-                    <h1>L'Art de la Pâtisserie</h1>
-                    <p>Bienvenue dans mon univers gourmand. Découvrez les créations, les techniques et la rigueur d'un futur diplômé du CAP Pâtissier.</p>
+                    <h1>La passion de la précision</h1>
+                    <h2>Louis Treels - candidat en CAP pâtisserie</h2>
+                    <p>Actuellement en reconversion professionnelle après un parcours en BUT Informatique , je me consacre pleinement 
+                        à ma véritable vocation : la pâtisserie. Découvrez mon univers, où la rigueur technique rencontre le plaisir 
+                        de la transmission.</p>
                     <a href="#gallery" class="btn-cta">Découvrir les créations</a>
                 </div>
                 <div class="hero-image">
@@ -36,13 +45,20 @@
             </div>
         </section>
 
-        <section id="about">
+        <section id="about" class="fade-in">
             <div class="about-container">
-                <h2>L'Artisan</h2>
+                <h2>De la logique de l'informatique à l'artisanat</h2>
                 <div class="about-grid">
                     <div class="about-content">
-                        <p>Passionné par la précision, les textures et l'authenticité du fait-maison, je structure mon apprentissage autour de la rigueur des techniques traditionnelles françaises.</p>
-                        <p>Ce portfolio retrace mon parcours à travers le CAP, mes expérimentations en laboratoire et mon amour pour la mise en valeur des beaux et bons produits.</p>
+                        <p>Mon parcours est celui d'une prise de conscience. Étudiant en informatique , j'ai réalisé que j'avais 
+                            profondément besoin de lien humain et de ressentir la satisfaction directe d'apporter une expérience 
+                            mémorable aux gens à travers mon savoir-faire. La pâtisserie, qui a toujours été ma passion , s'est 
+                            imposée comme une évidence pour m'épanouir pleinement.</p>
+                        <p>Je ne pars pas de zéro. Mes études scientifiques m'ont inculqué une grande rigueur , tandis que mes 
+                            trois années d'expérience en restauration rapide m'ont forgé une solide gestion du stress en période 
+                            de forte affluence. Habitué à l'endurance, à la discipline horaire et au travail en équipe , je suis 
+                            aujourd'hui déterminé à intégrer un CAP Pâtissier en 1 an pour perfectionner ma technique et faire de 
+                            cette passion mon métier.</p>
                     </div>
                     <div class="about-image">
                         <img src="placeholder-artisan.jpg" alt="Photographie en laboratoire de pâtisserie">
@@ -51,10 +67,10 @@
             </div>
         </section>
 
-        <section id="gallery">
+        <section id="gallery" class="fade-in">
             <div class="gallery-container">
-                <h2>Pièces Signatures</h2>
-                <p class="gallery-subtitle">Un aperçu technique et visuel de mes plus belles réalisations.</p>
+                <h2>Mes premières réalisations</h2>
+                <p class="gallery-subtitle">Un aperçu de ma pratique amateure, motivée par la curiosité et l'envie constante d'apprendre.</p>
                 
                 <div class="gallery-grid">
                     <article class="gallery-item">
@@ -62,8 +78,9 @@
                             <img src="placeholder-entremets.jpg" alt="Entremets Chocolat et Fruits Rouges">
                         </div>
                         <div class="item-info">
-                            <h3>L'Entremets Signature</h3>
-                            <p>Travail sur le glaçage miroir et l'équilibre des textures.</p>
+                            <h3>Le Layer Cake</h3>
+                            <p>Maîtrise du montage multi-couches, recherche de la stabilité parfaite de l'entremets et travail minutieux 
+                                pour un lissage net des contours.</p>
                         </div>
                     </article>
 
@@ -72,8 +89,9 @@
                             <img src="placeholder-tarte.jpg" alt="Tarte au Citron Meringuée">
                         </div>
                         <div class="item-info">
-                            <h3>La Tarte Contemporaine</h3>
-                            <p>Fonçage traditionnel et meringue italienne pochée à la douille cannelée.</p>
+                            <h3>Les Chouquettes Garnies</h3>
+                            <p>Apprentissage des étapes clés de la pâte à choux, avec une gestion précise des temps de cuisson 
+                                et l'application des techniques de garnissage propres à la poche à douille.</p>
                         </div>
                     </article>
 
@@ -82,8 +100,21 @@
                             <img src="placeholder-viennoiserie.jpg" alt="Croissants et Pains au Chocolat">
                         </div>
                         <div class="item-info">
-                            <h3>Le Feuilletage</h3>
-                            <p>Maîtrise de la pâte levée feuilletée (PLF) pour des viennoiseries alvéolées.</p>
+                            <h3>Le Cheesecake</h3>
+                            <p>Réalisation d'un entremets frais misant sur le contraste en bouche, d'une base
+                                 biscuitée croustillante à la douceur d'un appareil crémeux homogène.</p>
+                        </div>
+                    </article>
+
+                    <article class="gallery-item">
+                        <div class="item-image">
+                            <img src="placeholder-shortbread.jpg" alt="Croissants et Pains au Chocolat">
+                        </div>
+                        <div class="item-info">
+                            <h3>Les Sablés Millionnaire & Thématiques</h3>
+                            <p>Travail de la pâte sablée, déclinaisons d'arômes, colorations des masses
+                                 et intégration de caramel pour des créations gourmandes faites maison, 
+                                 pensées avant tout pour faire plaisir à mon entourage.</p>
                         </div>
                     </article>
                 </div>
@@ -92,22 +123,23 @@
 
     </main>
 
-    <footer>
+    <footer id="contact">
         <div class="footer-container">
             <div class="footer-contact">
-                <h3>Restons en contact</h3>
-                <p>Envie d'échanger sur une technique, un projet ou une opportunité ?</p>
-                <a href="mailto:adresse@email.com" class="email-link">mon.adresse@email.com</a>
+                <h3>Contactez-moi</h3>
+                <p>Envie d'échanger sur un projet ou une opportunité ?</p>
+                <a href="mailto:adresse@email.com" class="email-link">louis.treels.pro@gmail.com</a>
             </div>
             <div class="footer-socials">
                 <a href="#" target="_blank" rel="noopener noreferrer">Instagram</a>
                 <a href="#" target="_blank" rel="noopener noreferrer">LinkedIn</a>
             </div>
             <div class="footer-credits">
-                <p>&copy; 2026 - Portfolio CAP Pâtisserie. Conçu avec rigueur.</p>
+                <p>&copy; 2026 - Portfolio CAP Pâtisserie</p>
             </div>
         </div>
     </footer>
 
+    <script src="js/script.js"></script>
 </body>
 </html>
