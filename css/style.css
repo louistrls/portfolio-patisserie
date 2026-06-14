@@ -64,7 +64,17 @@ nav {
     margin: 0 auto;
 }
 
+.nav-logo img {
+    height: 50px;       /* Ajuste la hauteur pour correspondre à la barre de navigation */
+    width: 50px;        /* Maintient des proportions carrées */
+    border-radius: 50%; /* Transforme la photo en un cercle parfait */
+    object-fit: cover;  /* Empêche l'image de se déformer ou de s'écraser */
+}
+
 .nav-logo a {
+    display: flex;
+    align-items: center;
+    gap: 15px;
     font-family: var(--font-heading);
     font-size: 1.5rem;
     font-weight: 700;
