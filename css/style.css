@@ -81,6 +81,20 @@ nav {
     color: var(--color-main);
 }
 
+#logo-smb{
+    height: 100px;      
+    width: 100px;      
+    border-radius: 50%;
+    object-fit: cover;  
+}
+
+#logo-mcdo{
+    height: 80px;      
+    width: 80px;      
+    border-radius: 50%;
+    object-fit: cover;    
+}
+
 .nav-links {
     list-style: none;
     display: flex;
@@ -626,4 +640,167 @@ html {
         left: 20px;
         top: 20px;
     }
+}
+
+/* --- COMPÉTENCES TRANSFÉRABLES : Grille de cartes --- */
+.skills-transfer-section {
+    padding: 5rem 5%;
+    background-color: var(--color-white);
+}
+
+.section-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.section-container h2 {
+    font-size: 2.5rem;
+    text-align: center;
+    color: var(--color-main);
+    margin-bottom: 0.5rem;
+}
+
+.section-subtitle {
+    text-align: center;
+    margin-bottom: 4rem;
+    font-style: italic;
+    color: #666;
+}
+
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2.5rem;
+}
+
+.skill-card {
+    background-color: var(--color-bg);
+    padding: 2.5rem;
+    border-radius: 8px;
+    text-align: center;
+    border-top: 4px solid var(--color-accent);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    transition: var(--transition-smooth);
+}
+
+.skill-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(46, 28, 22, 0.08);
+}
+
+.skill-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.skill-card h3 {
+    font-size: 1.3rem;
+    color: var(--color-main);
+    margin-bottom: 1rem;
+}
+
+.skill-card p {
+    font-size: 0.95rem;
+    color: #555;
+    text-align: justify;
+}
+
+/* --- VALIDATION ACADÉMIQUE : Tableau stylisé --- */
+.diplomas-section {
+    padding: 5rem 5%;
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto; /* Permet le défilement horizontal propre sur petit écran */
+}
+
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0 3rem 0;
+    font-size: 1rem;
+    background-color: var(--color-white);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.styled-table injustices {
+    text-align: left;
+}
+
+.styled-table th, 
+.styled-table td {
+    padding: 1.2rem 1.5rem;
+    text-align: left; /* Alignement rigoureux et uniforme */
+}
+
+.styled-table th {
+    background-color: var(--color-main);
+    color: var(--color-bg);
+    font-family: var(--font-heading);
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+.styled-table tr {
+    border-bottom: 1px solid rgba(46, 28, 22, 0.08);
+    transition: var(--transition-smooth);
+}
+
+.styled-table tbody tr:nth-of-type(even) {
+    background-color: rgba(250, 246, 240, 0.5); /* Alternance de ligne discrète */
+}
+
+.styled-table tbody tr:hover {
+    background-color: rgba(201, 138, 75, 0.08); /* Surlignage au survol */
+}
+
+/* --- PHILOSOPHIE & VALEURS : Bloc centré --- */
+.philosophy-section {
+    padding: 5rem 5%;
+    background-color: var(--color-main);
+    color: var(--color-bg);
+    text-align: center;
+}
+
+.philosophy-block {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.philosophy-block h2 {
+    color: var(--color-accent);
+    margin-bottom: 2rem;
+}
+
+.philosophy-text {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    font-style: italic;
+    font-weight: 300;
+}
+
+/* --- CALL TO ACTION FINAL --- */
+.parcours-cta {
+    padding: 6rem 5%;
+    text-align: center;
+    background-color: var(--color-white);
+}
+
+.cta-container {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.parcours-cta h2 {
+    font-size: 2.2rem;
+    margin-bottom: 1rem;
+}
+
+.parcours-cta p {
+    color: #666;
+    margin-bottom: 2.5rem;
+    font-size: 1.1rem;
 }
