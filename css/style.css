@@ -347,11 +347,18 @@ footer {
     .nav-links {
         display: none; /* A remplacer par un menu hamburger en JS plus tard */
     }
+
+#hero {
+        height: auto;
+        min-height: 80vh;
+        padding-top: 3rem; /* Repousse le texte pour qu'il ne soit plus caché */
+    }
 }
 
 /* Défilement fluide natif */
 html {
     scroll-behavior: smooth;
+    scroll-padding-top: 100px; /* Compense la hauteur de ton en-tête */
 }
 
 /* Menu Hamburger (caché sur Desktop) */
@@ -372,19 +379,21 @@ html {
 /* Responsive Menu (Mobile) */
 @media (max-width: 768px) {
     .hamburger {
-        display: block;
+        position: relative;
+        z-index: 1001; /* Le place tout au-dessus */
     }
     
     .nav-links {
         position: fixed;
         left: -100%; /* Caché hors de l'écran par défaut */
-        top: 70px;
+        top: 85px;
         flex-direction: column;
         background-color: var(--color-bg);
         width: 100%;
         text-align: center;
         transition: 0.3s;
         box-shadow: 0 10px 10px rgba(0,0,0,0.1);
+        z-index: 1000;
     }
     
     .nav-links.active {
