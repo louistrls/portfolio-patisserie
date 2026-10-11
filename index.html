@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Louis Treels, candidat au CAP Pâtissier à Lille : portfolio de créations, parcours de reconversion et ambition de se spécialiser dans les desserts de restaurant.">
+    <meta name="theme-color" content="#fcf8f1">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Louis Treels | Portfolio CAP Pâtisserie">
+    <meta property="og:description" content="Mes créations, mon parcours de reconversion et mon ambition : les desserts de restaurant.">
+    <!-- TODO : pour un bel aperçu quand le lien est partagé (WhatsApp, LinkedIn…),
+         ajoute une photo de ta plus belle création :
+         <meta property="og:image" content="https://louistrls.github.io/portfolio-patisserie/images/TA_PHOTO.webp"> -->
+    <title>Louis Treels | Portfolio CAP Pâtisserie</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="stylesheet" href="css/style.css">
+    <noscript>
+        <!-- Sans JavaScript, on affiche quand même tout ce qui est en fondu au scroll. -->
+        <style>.fade-in { opacity: 1; transform: none; }</style>
+    </noscript>
+</head>
+<body>
+
+    <a class="skip-link" href="#main">Aller au contenu</a>
+
+    <header>
+        <nav>
+            <div class="nav-logo">
+                <!-- Version recadrée sur le visage (images/Photo_Louis_Treels_visage.webp) : le menu est petit, le visage doit remplir le rond -->
+                <img src="images/Photo_Louis_Treels_visage.webp" alt="" width="52" height="52"/>
+                <a href="index.html">Louis Treels</a>
+            </div>
+            <div class="hamburger"><span class="bar"></span><span class="bar"></span><span class="bar"></span></div>
+            <ul class="nav-links">
+                <li><a href="index.html" class="active" aria-current="page">Accueil</a></li>
+                <li><a href="creations.html">Créations</a></li>
+                <li><a href="parcours.html">Mon Parcours</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main id="main">
+
+        <!-- ==================== HERO ==================== -->
+        <section class="hero fade-in">
+            <div class="hero-text">
+                <p class="eyebrow">CAP Pâtissier · Lille</p>
+                <!-- TITRE À VALIDER. Alternatives :
+                     - La précision du geste, la générosité du partage.
+                     - Du code au sucre : une reconversion qui se goûte.
+                     - Pâtissier en devenir, rigoureux par nature. -->
+                <h1>La rigueur d'un informaticien, la gourmandise d'un pâtissier.</h1>
+                <p>Actuellement en CAP Pâtisserie en 1 an au Lycée Hôtelier International de Lille (LHIL), je vise l'excellence sur les fondamentaux afin de pouvoir entreprendre l'année prochaine un Certificat de Spécialisation (CS) en dessert de restaurant.</p>
+                <div class="hero-actions">
+                    <a href="creations.html" class="btn-decouvrir">Voir mes créations</a>
+                    <a href="parcours.html" class="btn-outline">Mon parcours</a>
+                </div>
+                <!-- TODO : dépose ton CV au format PDF dans un dossier "documents" à la racine du site,
+                     sous le nom documents/CV_Louis_Treels.pdf (ou change le chemin ci-dessous). -->
+                <a href="documents/CV_Louis_Treels.pdf" target="_blank" class="link-cv" download><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg> Télécharger mon CV <span class="link-cv-meta">(PDF)</span></a>
+            </div>
+            <div class="hero-media">
+                <div class="hero-frame" id="hero-frame">
+                    <!-- Photos injectées par js/script.js (renderHero) -->
+                    <div class="hero-slides" id="hero-slides"></div>
+                    <a class="hero-caption" id="hero-caption" href="creations.html"></a>
+                    <div class="hero-dots" id="hero-dots"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== CHIFFRES CLÉS ==================== -->
+        <section class="home-highlights" aria-label="Chiffres clés">
+            <div class="highlights-bar highlights-bar--home" id="highlights">
+                <!-- Générés automatiquement depuis js/parcours-data.js -->
+            </div>
+        </section>
+
+        <!-- ==================== À PROPOS ==================== -->
+        <section class="about-section">
+            <div class="about fade-in">
+                <figure class="about-photo">
+                    <!-- TODO : quand tu auras une photo en tenue de pâtissier, remplace simplement ce fichier. -->
+                    <img src="images/Photo_Louis_Treels.webp" alt="Portrait de Louis Treels, souriant" width="643" height="644" loading="lazy">
+                </figure>
+                <div class="about-text">
+                    <p class="eyebrow">À propos</p>
+                    <h2>Un parcours atypique, un même goût de l'exigence.</h2>
+                    <p>Je m'appelle Louis. Après un BUT Informatique et plus de trois ans passés en restauration rapide, j'ai fait le choix de la pâtisserie : un métier où l'on crée de ses mains et où chaque réussite se partage tout de suite. Ce projet de réorientation était évident, je pâtissais beaucoup étant petit, mais je n'avais plus le temps de m'y consacrer pleinement quand je poursuivais mon cursus en informatique.</p>
+                    <p>Aujourd'hui, j'apprends en alternance dans une boulangerie pâtisserie tout en préparant mon CAP. Ce site rassemble mes réalisations, mes réussites comme mes axes de progression, parce que c'est en les regardant en face qu'on avance.</p>
+                    <dl class="about-facts">
+                        <div class="about-fact">
+                            <dt>Formation</dt>
+                            <dd>CAP Pâtissier en 1 an, Lycée Hôtelier International de Lille</dd>
+                        </div>
+                        <div class="about-fact">
+                            <dt>Apprentissage</dt>
+                            <dd>Boulangerie Pâtisserie MAËS, Wavrin</dd>
+                        </div>
+                        <div class="about-fact">
+                            <dt>Objectif</dt>
+                            <dd>CS dessert de restaurant, perspectives de poursuite en chocolaterie, confiserie et boulangerie.</dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== DERNIÈRES CRÉATIONS ==================== -->
+        <section class="teaser-section fade-in">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">Créations</p>
+                    <h2>Mes dernières créations</h2>
+                </div>
+                <a href="creations.html" class="teaser-link">Voir toutes les créations</a>
+            </div>
+            <div class="teaser-grid" id="creations-teaser">
+                <!-- Cartes générées automatiquement depuis js/creations-data.js -->
+            </div>
+            <noscript>
+                <p class="noscript-note"><a href="creations.html">Voir toutes mes créations</a></p>
+            </noscript>
+        </section>
+
+        <!-- ==================== PROGRESSION ==================== -->
+        <!-- Générée par js/script.js (renderProgress) : la 1re création vs la plus récente de la même famille.
+             Si les données ne permettent pas la comparaison, la section est retirée automatiquement. -->
+        <section class="progress-section band" id="progress">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">Progression</p>
+                    <h2>D'où je suis parti, où j'en suis</h2>
+                </div>
+                <a href="creations.html" class="teaser-link">Toutes mes créations</a>
+            </div>
+            <div class="progress" id="progress-compare">
+                <!-- Cartes générées automatiquement depuis js/creations-data.js -->
+            </div>
+            <p class="progress-note" id="progress-note"></p>
+        </section>
+
+
+        <!-- ==================== PARCOURS ==================== -->
+        <section class="section-teal band">
+            <div class="parcours-teaser fade-in">
+                <p class="eyebrow">Parcours</p>
+                <h2>D'un BUT Informatique à la pâtisserie</h2>
+                <p>Après plusieurs années dans la restauration rapide et un BUT Informatique, j'ai choisi de mettre cette rigueur au service d'un métier manuel et humain. Une reconversion assumée, portée par l'envie de créer et de transmettre.</p>
+                <ol class="path" aria-label="Mon cheminement">
+                    <li class="path-step">Bac général</li>
+                    <li class="path-step">BUT Informatique</li>
+                    <li class="path-step is-current">CAP Pâtissier</li>
+                    <li class="path-step is-goal">Grande école</li>
+                </ol>
+                <a href="parcours.html" class="teaser-link">Découvrir mon parcours</a>
+            </div>
+        </section>
+
+        <!-- ==================== AMBITION ==================== -->
+        <section class="ambition-section">
+            <div class="ambition fade-in">
+                <p class="eyebrow">Ambition</p>
+                <h2>Mon objectif</h2>
+                <p class="ambition-quote">Intégrer une grande école de pâtisserie pour me spécialiser dans la conception de desserts de restaurant.</p>
+                <ul class="pillars">
+                    <li class="pillar"><strong>Technique</strong><span>Les bases d'abord : le CAP, la régularité du geste, le respect des fondamentaux.</span></li>
+                    <li class="pillar"><strong>Créativité</strong><span>Associer textures, saveurs et dressage pour raconter quelque chose dans l'assiette.</span></li>
+                    <li class="pillar"><strong>Exigence</strong><span>Viser le niveau de la gastronomie : précision, constance et goût du détail.</span></li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ==================== CONTACT ==================== -->
+        <section class="section-cacao band" id="contact">
+            <div class="contact-cta fade-in">
+                <p class="eyebrow">Contact</p>
+                <h2>Envie d'échanger ?</h2>
+                <p>Une opportunité, un projet, une question sur mon parcours : je serais ravi d'en discuter.</p>
+                <!-- Si aucun logiciel de messagerie n'est configuré, le lien mailto ne fait rien : d'où le bouton "Copier". -->
+                <p class="contact-direct">
+                    Écrivez-moi : <a class="contact-address" href="mailto:louis.treels.pro@gmail.com">louis.treels.pro@gmail.com</a>
+                    <button type="button" class="btn-copy" data-copy="louis.treels.pro@gmail.com">Copier l'adresse</button>
+                    <span class="copy-status" role="status" aria-live="polite"></span>
+                </p>
+                <div class="cta-actions">
+                    <a href="documents/CV_Louis_Treels.pdf" target="_blank" class="btn-cv" download><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg> Télécharger mon CV</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <a href="mailto:louis.treels.pro@gmail.com" class="email-link">louis.treels.pro@gmail.com</a>
+            <!-- TODO : remets ici le bloc <div class="footer-socials"> avec tes liens Instagram / LinkedIn quand les comptes seront prêts -->
+            <p class="footer-credits">&copy; 2026 - Portfolio CAP Pâtisserie</p>
+        </div>
+    </footer>
+
+    <script src="js/creations-data.js"></script>
+    <script src="js/parcours-data.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>

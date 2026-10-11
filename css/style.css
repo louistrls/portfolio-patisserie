@@ -1,0 +1,1929 @@
+/* ==========================================================================
+   Portfolio CAP Pâtisserie — feuille de style
+   Base neutre, pensée pour être ré-harmonisée facilement : toutes les
+   couleurs et polices sont centralisées dans :root ci-dessous. Change les
+   valeurs des variables pour changer l'identité visuelle du site entier.
+   ========================================================================== */
+
+:root {
+  /* Couleurs */
+  --color-bg: #fcf8f1;          /* crème : remplace le blanc cassé froid */
+  --color-bg-alt: #f4eadb;      /* crème foncé (bandes, pied de page) */
+  --color-text: #2b211b;
+  --color-text-muted: #6a5d51;
+  --color-border: #e6d9c4;
+  --color-accent: #5b6f52;
+  --color-accent-dark: #45543e;
+
+  /* Palette "pâtisserie" de l'accueil */
+  --color-cream-deep: #efe0c8;   /* fond des blocs chaleureux */
+  --color-caramel: #c98a4b;      /* = --color-button, pour les décors */
+  --color-caramel-text: #85531f; /* caramel assez foncé pour du petit texte */
+  --color-cacao: #2e1c16;        /* chocolat : bande de contact, hover */
+  --color-paper: #fffdf9;        /* cartes "papier" posées sur le crème */
+  /* Fond "nappage" partagé par le hero de l'accueil et les en-têtes de page */
+  --bg-halo:
+    radial-gradient(circle at 10% 15%, rgba(239, 169, 174, 0.32), transparent 42%),
+    radial-gradient(circle at 92% 90%, rgba(201, 138, 75, 0.30), transparent 46%),
+    linear-gradient(135deg, #fbf7f0 0%, #f4e8d8 100%);
+  --shadow-soft: 0 10px 30px rgba(46, 28, 22, 0.08);
+  --shadow-lift: 0 18px 40px rgba(46, 28, 22, 0.14);
+  /* Grain de papier très discret (SVG inline, aucune image à charger) */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .4 0 0 0 0 .28 0 0 0 0 .18 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+
+  /* Couleurs des badges par tag (voir TAG_COLORS dans js/script.js) —
+     ajoute une variable ici + une entrée dans TAG_COLORS si tu veux qu'un
+     nouveau tag ait sa propre couleur plutôt que --color-accent. */
+  --badge-entremets: #22223b;
+  --badge-apprentissage: #4a4e69;
+  --badge-fruitees: #9a8c98;
+  --badge-choux: #8eb2b5;
+  --badge-foncage: #C5B36D;
+  --badge-verrines: #8e3b46;
+  --badge-levees: #046244;
+  --badge-petits-fours: #EFA9AE;
+  --badge-voyage: #abb557;
+
+  /* Bouton "Découvrir" et modale de détails */
+  --color-button: #c98a4b;
+  --color-button-text: #2e1c16;
+  --color-button-hover-bg: #2e1c16;
+  --color-button-hover-text: #faf6f0;
+  --color-modal-overlay: rgba(46, 28, 22, 0.7);
+  --color-modal-bg: #faf6f0;
+  --color-modal-text: #2e1c16;
+
+  /* Typographie */
+  --font-heading: "Fraunces", serif;
+  --font-body: "Work Sans", sans-serif;
+
+  /* Structure */
+  --radius-s: 4px;
+  --radius-m: 8px;
+  --max-width: 1080px;
+  --transition-base: 220ms ease;
+}
+
+/* ==========================================================================
+   Reset de base
+   ========================================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Les liens d'ancre (#contact, #progress…) ne passent pas sous l'en-tête fixe */
+  scroll-padding-top: 5.5rem;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  line-height: 1.25;
+  margin: 0 0 0.5em;
+}
+
+p {
+  margin: 0 0 1em;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Lien d'évitement : visible uniquement au clavier */
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 200;
+  background: var(--color-cacao);
+  color: #fff;
+  padding: 0.6rem 1rem;
+  border-radius: var(--radius-s);
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
+/* ==========================================================================
+   En-tête / navigation
+   ========================================================================== */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  /* Crème légèrement translucide + flou : le contenu glisse doucement dessous */
+  background: rgba(252, 248, 241, 0.9);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--color-border);
+  transition: box-shadow 300ms ease;
+}
+
+/* Classe posée par initHeader() (js/script.js) dès qu'on a fait défiler la page */
+header.is-scrolled {
+  box-shadow: 0 6px 24px rgba(46, 28, 22, 0.08);
+}
+
+/* Barre de progression de lecture, collée sous l'en-tête */
+.scroll-progress {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--badge-verrines), var(--color-caramel));
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  pointer-events: none;
+}
+
+nav {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.nav-logo img {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  /* Liseré caramel : le visage ressort sur le fond crème */
+  border: 2px solid var(--color-caramel);
+  background: var(--color-cream-deep);
+  transform-origin: left center;
+  transition: transform 250ms ease;
+}
+
+header.is-scrolled .nav-logo img {
+  transform: scale(0.8);
+}
+
+.nav-logo a {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  text-decoration: none;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links a {
+  position: relative;
+  text-decoration: none;
+  color: var(--color-text-muted);
+  transition: color var(--transition-base);
+}
+
+/* Soulignement caramel qui se dessine au survol et reste sur la page courante */
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -4px;
+  height: 2px;
+  background: var(--color-caramel);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 250ms ease;
+}
+
+.nav-links a:hover::after,
+.nav-links a.active::after {
+  transform: scaleX(1);
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  color: var(--color-text);
+}
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  padding: 0.5rem;
+}
+
+.hamburger .bar {
+  width: 22px;
+  height: 2px;
+  background: var(--color-text);
+  transition: transform var(--transition-base), opacity var(--transition-base);
+}
+
+.hamburger.is-open .bar:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.hamburger.is-open .bar:nth-child(2) {
+  opacity: 0;
+}
+.hamburger.is-open .bar:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ==========================================================================
+   En-tête de page
+   ========================================================================== */
+.page-header {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  width: calc(100% - 3rem);
+  max-width: var(--max-width);
+  margin: 2rem auto 2.5rem;
+  padding: 3.5rem 3rem;
+  background: var(--bg-halo);
+  border-radius: 24px;
+  text-align: left;
+}
+
+/* Variante qui laisse la place à la carte de chiffres clés (parcours) */
+.page-header--tall {
+  margin-bottom: 0;
+  padding-bottom: 5.5rem;
+}
+
+.page-header h1 {
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  max-width: 20ch;
+}
+
+.page-header p {
+  max-width: 56ch;
+  color: var(--color-text-muted);
+}
+
+.gallery-count {
+  display: inline-block;
+  margin: 0.5rem 0 0;
+  padding: 0.3rem 0.95rem;
+  background: rgba(255, 253, 249, 0.85);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.gallery-count:empty {
+  display: none;
+}
+
+/* ==========================================================================
+   Barre de filtres
+   ========================================================================== */
+.filter-bar {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 1.5rem 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.filter-btn {
+  border: 1px solid var(--color-border);
+  background: var(--color-paper);
+  color: var(--color-text-muted);
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  transition: background var(--transition-base), color var(--transition-base), border-color var(--transition-base);
+}
+
+.filter-btn:hover {
+  border-color: var(--color-caramel);
+  color: var(--color-text);
+}
+
+.filter-btn.is-active {
+  background: var(--color-cacao);
+  border-color: var(--color-cacao);
+  color: var(--color-bg);
+}
+
+/* ==========================================================================
+   Grille de créations
+   ========================================================================== */
+.detailed-gallery {
+  padding-bottom: 4rem;
+}
+
+.gallery-grid {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+}
+
+.creation-card {
+  border: 1px solid var(--color-border);
+  border-radius: 8px 28px 8px 28px; /* même asymétrie que l'accueil */
+  overflow: hidden;
+  background: var(--color-paper);
+  box-shadow: 0 4px 14px rgba(46, 28, 22, 0.05);
+  display: flex;
+  flex-direction: column;
+  transition:
+    opacity 500ms ease,
+    transform 500ms ease,
+    box-shadow 300ms ease,
+    border-color 300ms ease;
+}
+
+.creation-card:hover,
+.creation-card:focus-within {
+  border-color: var(--color-caramel);
+  box-shadow: var(--shadow-lift);
+}
+
+.creation-media {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: var(--color-bg-alt);
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+
+.creation-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 400ms ease;
+}
+
+.creation-media:hover img,
+.creation-media:focus-visible img {
+  transform: scale(1.04);
+}
+
+.media-count {
+  position: absolute;
+  bottom: 0.6rem;
+  right: 0.6rem;
+  background: rgba(33, 31, 28, 0.75);
+  color: #fff;
+  font-size: 0.75rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-s);
+}
+
+.creation-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.creation-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Les couleurs de badge sont posées en JS (voir colorForTag dans
+   script.js) car un même tag est réutilisé sur un nombre variable de
+   créations et de tags par carte : plus simple à maintenir qu'une règle
+   CSS par catégorie à chaque fois qu'un tag est ajouté. */
+.badge {
+  display: inline-block;
+  background: var(--color-accent);
+  color: #fff;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-s);
+}
+
+/* Badges à fond clair : texte foncé pour garder un bon contraste */
+.badge--light {
+  color: var(--color-text);
+}
+
+.creation-date {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin-left: auto;
+}
+
+.creation-card h2 {
+  font-size: 1.35rem;
+}
+
+.creation-desc {
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.tech-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.92rem;
+}
+
+.tech-list strong {
+  color: var(--color-text);
+}
+
+.creation-reflection {
+  margin-top: 0.5rem;
+  padding: 1rem;
+  background: var(--color-bg-alt);
+  border-radius: var(--radius-s);
+  border-left: 3px solid var(--color-accent);
+}
+
+.creation-reflection h3 {
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+
+.creation-reflection p {
+  font-size: 0.9rem;
+  margin: 0 0 0.4em;
+  color: var(--color-text-muted);
+}
+
+.creation-reflection p:last-child {
+  margin-bottom: 0;
+}
+
+/* --- Bouton "Découvrir ma création" --- */
+.btn-decouvrir {
+  background-color: var(--color-button);
+  color: var(--color-button-text);
+  border: none;
+  padding: 10px 16px;
+  border-radius: var(--radius-s);
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+  margin-top: auto;
+  align-self: flex-start;
+  /* Le bouton sert aussi sur des liens <a> (accueil) */
+  display: inline-block;
+  text-decoration: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-decouvrir:hover {
+  background-color: var(--color-button-hover-bg);
+  color: var(--color-button-hover-text);
+}
+
+/* ==========================================================================
+   Modale de détails (fusionne l'ancienne lightbox : photo(s) + texte)
+   ========================================================================== */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: var(--color-modal-overlay);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.modal[hidden] {
+  display: none !important;
+}
+
+.modal.is-open {
+  opacity: 1;
+}
+
+.modal-content {
+  background-color: var(--color-modal-bg);
+  color: var(--color-modal-text);
+  padding: 30px;
+  border-radius: 10px 32px 10px 32px;
+  max-width: 900px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  transform: scale(0.96);
+  transition: transform 200ms ease;
+}
+
+.modal.is-open .modal-content {
+  transform: scale(1);
+}
+
+.modal-close {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: var(--color-modal-text);
+  cursor: pointer;
+  line-height: 1;
+}
+
+.modal-close:hover {
+  color: var(--color-button);
+}
+
+.modal-layout {
+  display: flex;
+  gap: 30px;
+  align-items: flex-start;
+}
+
+.modal-media {
+  flex: 0 0 45%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-height: 65vh;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+.modal-gallery-img {
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  object-fit: cover;
+  box-shadow: 0 2px 8px rgba(46, 28, 22, 0.1);
+}
+
+.modal-text {
+  flex: 1;
+}
+
+@media (max-width: 768px) {
+  .modal-layout {
+    flex-direction: column;
+  }
+
+  .modal-media {
+    flex: none;
+    width: 100%;
+    max-height: 35vh;
+  }
+}
+
+/* ==========================================================================
+   Chiffres clés (parcours.html)
+   ========================================================================== */
+.highlights-bar {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 1.5rem 2.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.highlight-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.highlight-value {
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--color-accent-dark);
+}
+
+.highlight-label {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  max-width: 22ch;
+}
+
+/* ==========================================================================
+   Timeline (parcours.html)
+   ========================================================================== */
+.timeline-section {
+  padding-bottom: 4rem;
+}
+
+.timeline-container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 1.5rem 0 60px;
+  position: relative;
+}
+
+/* Ligne verticale en dégradé : vive près d'aujourd'hui, plus neutre vers
+   les étapes anciennes — renforce l'idée de trajectoire qui converge. */
+.timeline-container::before {
+  content: "";
+  position: absolute;
+  left: 24px;
+  top: 14px;
+  bottom: 14px;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--badge-verrines), var(--color-caramel) 45%, var(--color-border));
+}
+
+.timeline-item {
+  position: relative;
+  padding-bottom: 2.5rem;
+}
+
+.timeline-item:last-child {
+  padding-bottom: 0;
+}
+
+.timeline-icon {
+  position: absolute;
+  left: -38px;
+  top: 0.2rem;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-paper);
+  border: 2px solid var(--badge-verrines);
+  color: var(--badge-verrines);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+/* L'étape la plus récente ressort : pastille pleine */
+.timeline-item:first-child .timeline-icon {
+  background: var(--badge-verrines);
+  color: #fff;
+  box-shadow: 0 0 0 5px rgba(142, 59, 70, 0.15);
+}
+
+.timeline-icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+.timeline-date {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-caramel-text);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.6rem;
+}
+
+/* Chaque étape devient une carte "papier" */
+.timeline-content {
+  padding: 1.25rem 1.4rem 1.4rem;
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 4px 24px 4px 24px;
+  box-shadow: 0 4px 14px rgba(46, 28, 22, 0.05);
+  transition: box-shadow 300ms ease, border-color 300ms ease;
+}
+
+.timeline-item:hover .timeline-content {
+  border-color: var(--color-caramel);
+  box-shadow: var(--shadow-lift);
+}
+
+.timeline-logo {
+  max-height: 36px;
+  width: auto;
+  object-fit: contain;
+  margin-bottom: 0.75rem;
+  transition: transform 300ms ease;
+}
+
+.timeline-item:hover .timeline-logo {
+  transform: scale(1.08);
+}
+
+.timeline-content h3 {
+  font-size: 1.3rem;
+  margin-bottom: 0.15rem;
+}
+
+.timeline-content h4 {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  margin: 0 0 0.75rem;
+}
+
+.timeline-content p {
+  margin: 0;
+  max-width: 65ch;
+}
+
+/* ==========================================================================
+   Accueil (index.html)
+   ========================================================================== */
+
+/* Petit libellé de section en capitales espacées */
+.eyebrow,
+.hero-text .eyebrow,
+.page-header .eyebrow {
+  margin: 0 0 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-caramel-text);
+  max-width: none;
+}
+
+/* --- Hero --- */
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  width: calc(100% - 3rem);
+  max-width: var(--max-width);
+  margin: 2rem auto 0;
+  /* Le bas est généreux : la bande de chiffres clés vient le chevaucher */
+  padding: 4rem 3rem 5.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  align-items: center;
+  /* "Nappage caramel clair" + deux halos (rose pâle / caramel) pour casser
+     l'aplat, sur le même dégradé 135° qu'avant. */
+  background: var(--bg-halo);
+  border-radius: 24px;
+}
+
+/* Grain de papier : au-dessus du fond, sous le contenu (z-index négatif
+   dans un contexte isolé). */
+.hero::after,
+.page-header::after,
+.band::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: var(--grain);
+  opacity: 0.08;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+.hero-text {
+  position: relative;
+  z-index: 2;
+  /* On casse la grille : le texte vient mordre sur l'image à droite */
+  margin-right: -15%;
+  background: rgba(251, 247, 240, 0.85); /* Fond givré pour la lisibilité */
+  padding: 2.5rem;
+  border-radius: var(--radius-m);
+  backdrop-filter: blur(8px);
+  box-shadow: var(--shadow-soft);
+}
+
+.hero-text h1 {
+  font-size: clamp(1.9rem, 3.4vw, 2.7rem);
+  max-width: 18ch;
+}
+
+.hero-text p {
+  color: var(--color-text-muted);
+  max-width: 42ch;
+  font-size: 1.05rem;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.btn-outline {
+  display: inline-block;
+  padding: 10px 16px;
+  border-radius: var(--radius-s);
+  border: 1px solid var(--color-caramel-text);
+  color: var(--color-text);
+  text-decoration: none;
+  font-weight: 600;
+  transition: border-color 0.3s ease, color 0.3s ease, background-color 0.3s ease;
+}
+
+.btn-outline:hover {
+  border-color: var(--color-cacao);
+  background-color: rgba(255, 255, 255, 0.6);
+  color: var(--color-cacao);
+}
+
+/* Cadre de l'image principale : il découpe (overflow) le zoom lent, et
+   porte l'arrondi asymétrique. */
+.hero-frame {
+  position: relative;
+  isolation: isolate;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 8px 60px 12px 40px; /* haut-gauche, haut-droite, bas-droite, bas-gauche */
+  background: var(--color-cream-deep);
+  box-shadow: var(--shadow-lift);
+}
+
+.hero-slides {
+  position: absolute;
+  inset: 0;
+}
+
+/* Diaporama : fondu enchaîné + zoom lent (Ken Burns).
+   - .is-active   : la photo affichée (au-dessus)
+   - .is-leaving  : l'ancienne photo, gardée opaque dessous le temps du
+                    fondu, pour éviter le "trou" de luminosité d'un
+                    fondu croisé classique. */
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transform-origin: 60% 55%;
+  transition: opacity 1.2s ease;
+}
+
+.hero-slide.is-active,
+.hero-slide.is-leaving {
+  animation: heroZoom 10s ease-out forwards;
+}
+
+.hero-slide.is-active {
+  opacity: 1;
+  z-index: 2;
+}
+
+.hero-slide.is-leaving {
+  opacity: 1;
+  z-index: 1;
+}
+
+/* Une seule photo : le zoom reprend le rythme lent d'origine (25 s) */
+.hero-frame--single .hero-slide {
+  animation-duration: 25s;
+}
+
+@keyframes heroZoom {
+  from { transform: scale(1); }
+  to { transform: scale(1.08); }
+}
+
+.hero-caption {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 3;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  max-width: calc(100% - 2rem);
+  padding: 0.45rem 0.95rem;
+  border-radius: 999px;
+  background: rgba(46, 28, 22, 0.72);
+  backdrop-filter: blur(6px);
+  color: #fff;
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.hero-caption:empty {
+  display: none;
+}
+
+.hero-caption:hover {
+  background: rgba(46, 28, 22, 0.9);
+}
+
+.hero-caption-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #f1c99a;
+  white-space: nowrap;
+}
+
+.hero-dots {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 3;
+  display: flex;
+}
+
+.hero-dot {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  background: none;
+}
+
+.hero-dot::after {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border: 1.5px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.35);
+  transition: background-color 0.3s ease;
+}
+
+.hero-dot[aria-current="true"]::after {
+  background: #fff;
+}
+
+/* --- Chiffres clés (accueil ET parcours) : carte "papier" qui chevauche le haut de page --- */
+.home-highlights {
+  position: relative;
+  z-index: 3;
+  padding: 0 1.5rem;
+  margin: -3rem auto 4.5rem;
+}
+
+.highlights-bar--home {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-soft);
+}
+
+.highlights-bar--home .highlight-item {
+  align-items: center;
+  text-align: center;
+  padding: 0.25rem 1rem;
+}
+
+.highlights-bar--home .highlight-item + .highlight-item {
+  border-left: 1px solid var(--color-border);
+}
+
+.highlights-bar--home .highlight-value {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  color: var(--color-caramel-text);
+}
+
+.highlights-bar--home .highlight-label {
+  max-width: 24ch;
+}
+
+/* --- Section heading commun (titre + lien) --- */
+.section-heading {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 1.5rem 1.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.section-heading h2 {
+  margin: 0;
+  font-size: clamp(1.6rem, 3vw, 2rem);
+}
+
+/* Le "→" est un ajout visuel (pseudo-élément) : il n'est pas lu comme du
+   texte par les lecteurs d'écran. */
+.teaser-link {
+  color: var(--color-accent-dark);
+  text-decoration: none;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.teaser-link::after {
+  content: "→";
+  display: inline-block;
+  margin-left: 0.35em;
+  transition: transform 0.2s ease;
+}
+
+.teaser-link:hover::after {
+  transform: translateX(3px);
+}
+
+/* --- Teaser de créations --- */
+.teaser-section {
+  padding-bottom: 5rem;
+}
+
+.teaser-grid {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  align-items: start;
+  gap: 1.5rem;
+}
+
+/* Décalage une carte sur deux : casse l'alignement "tableau" */
+@media (min-width: 721px) {
+  .teaser-card:nth-child(even) {
+    margin-top: 1.75rem;
+  }
+}
+
+.teaser-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 8px 32px 8px 32px; /* même asymétrie que le hero */
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(46, 28, 22, 0.05);
+  /* --stagger : apparition en cascade (posé par renderCreationsTeaser) */
+  transition:
+    opacity 500ms ease var(--stagger, 0ms),
+    transform 500ms ease var(--stagger, 0ms),
+    box-shadow 300ms ease,
+    border-color 300ms ease;
+}
+
+.teaser-card:hover,
+.teaser-card:focus-visible {
+  border-color: var(--color-caramel);
+  box-shadow: var(--shadow-lift);
+}
+
+.teaser-media {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--color-bg-alt);
+}
+
+.teaser-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 400ms ease;
+}
+
+.teaser-card:hover .teaser-media img,
+.teaser-card:focus-visible .teaser-media img {
+  transform: scale(1.05);
+}
+
+.teaser-body {
+  padding: 1rem 1.1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.teaser-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.teaser-body h3 {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.noscript-note {
+  max-width: var(--max-width);
+  margin: 1rem auto 0;
+  padding: 0 1.5rem;
+}
+
+/* --- Bandes pleine largeur : couleurs de la charte --- */
+.band {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.section-teal {
+  background-color: var(--badge-verrines);
+  background-image: radial-gradient(circle at 88% 15%, rgba(255, 255, 255, 0.14), transparent 45%);
+  color: #fff;
+}
+.section-teal p { color: rgba(255, 255, 255, 0.92); }
+.section-teal .eyebrow { color: #f6cfd3; }
+.section-teal .teaser-link { color: #fff; text-decoration: underline; text-underline-offset: 4px; }
+
+/* Texte foncé : le blanc sur ce mauve clair n'atteint pas le contraste AA */
+.section-rouille {
+  background-color: var(--badge-fruitees);
+  color: var(--color-text);
+}
+.section-rouille p { color: var(--color-text); }
+
+.section-cacao {
+  background-color: var(--color-cacao);
+  background-image: radial-gradient(circle at 10% 90%, rgba(201, 138, 75, 0.22), transparent 50%);
+  color: #fdf3e6;
+  scroll-margin-top: 4.5rem;
+}
+.section-cacao h2 { color: #fff; }
+.section-cacao p { color: rgba(253, 243, 230, 0.88); }
+.section-cacao .eyebrow { color: #f1c99a; }
+.section-cacao .btn-decouvrir:hover {
+  background-color: var(--color-bg);
+  color: var(--color-cacao);
+}
+
+.parcours-teaser,
+.ambition,
+.contact-cta {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 4.5rem 1.5rem;
+  text-align: left;
+}
+
+.parcours-teaser p,
+.contact-cta p {
+  max-width: 60ch;
+}
+
+/* Cheminement en pastilles : Bac → BUT → CAP → grande école */
+.path {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 1.5rem 0 2rem;
+  padding: 0;
+}
+
+.path-step {
+  padding: 0.35rem 0.95rem;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 999px;
+  font-size: 0.88rem;
+}
+
+.path-step.is-current {
+  background: var(--color-bg);
+  border-color: var(--color-bg);
+  color: var(--badge-verrines);
+  font-weight: 600;
+}
+
+.path-step.is-goal {
+  border-style: dashed;
+}
+
+/* --- Progression : avant / aujourd'hui --- */
+.progress-section {
+  background: var(--color-cream-deep);
+  padding: 4.5rem 0;
+}
+
+.progress {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 1.25rem;
+  align-items: stretch;
+}
+
+.progress-card {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(46, 28, 22, 0.06);
+  transition:
+    opacity 500ms ease,
+    transform 500ms ease,
+    box-shadow 300ms ease,
+    border-color 300ms ease;
+}
+
+/* Arrondis en miroir : le "avant" et le "après" se regardent */
+.progress-card--from { border-radius: 8px 32px 8px 32px; }
+.progress-card--to { border-radius: 32px 8px 32px 8px; border-color: var(--color-caramel); }
+
+.progress-card:hover,
+.progress-card:focus-visible {
+  border-color: var(--color-caramel);
+  box-shadow: var(--shadow-lift);
+}
+
+.progress-media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--color-bg-alt);
+}
+
+.progress-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 400ms ease;
+}
+
+.progress-card:hover .progress-media img,
+.progress-card:focus-visible .progress-media img {
+  transform: scale(1.05);
+}
+
+.progress-chip {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  padding: 0.25rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(255, 253, 249, 0.92);
+  color: var(--color-cacao);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.progress-card--to .progress-chip {
+  background: var(--badge-verrines);
+  color: #fff;
+}
+
+.progress-body {
+  padding: 1rem 1.2rem 1.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.progress-date {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-caramel-text);
+}
+
+.progress-body h3 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.progress-quote {
+  margin: 0.4rem 0 0;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+/* Connecteur central : trait, durée écoulée, trait */
+.progress-gap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+}
+
+.progress-gap::before,
+.progress-gap::after {
+  content: "";
+  flex: 1;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, var(--color-caramel));
+}
+
+.progress-gap::after {
+  background: linear-gradient(to bottom, var(--color-caramel), transparent);
+}
+
+.progress-pill {
+  max-width: 7.5rem;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid var(--color-caramel);
+  border-radius: 999px;
+  background: var(--color-paper);
+  color: var(--color-caramel-text);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.95rem;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.progress-note {
+  max-width: 60ch;
+  margin: 2rem auto 0;
+  padding: 0 1.5rem;
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.progress-note:empty {
+  display: none;
+}
+
+/* --- À propos : portrait + présentation --- */
+.about-section {
+  padding: 1rem 0 5rem;
+}
+
+.about {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: grid;
+  grid-template-columns: minmax(240px, 0.8fr) 1.2fr;
+  gap: 3.5rem;
+  align-items: center;
+}
+
+.about-photo {
+  position: relative;
+  margin: 0;
+  max-width: 360px;
+  justify-self: center;
+}
+
+/* Forme caramel décalée derrière la photo */
+.about-photo::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translate(-14px, 14px) rotate(-3deg);
+  background: var(--color-cream-deep);
+  border: 1px solid var(--color-caramel);
+  border-radius: 8px 60px 12px 40px;
+}
+
+.about-photo img {
+  position: relative;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  object-position: 50% 20%;
+  border-radius: 8px 60px 12px 40px; /* même découpe que le hero */
+  box-shadow: var(--shadow-lift);
+}
+
+/* Voile chaud très léger : réchauffe le fond gris de la photo pour
+   l'accorder à la palette. Supprime ce bloc pour retrouver la photo brute. */
+.about-photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 8px 60px 12px 40px;
+  background: var(--color-caramel);
+  mix-blend-mode: soft-light;
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.about-text h2 {
+  font-size: clamp(1.6rem, 3vw, 2rem);
+  max-width: 22ch;
+}
+
+.about-text p {
+  max-width: 56ch;
+}
+
+.about-text .eyebrow {
+  max-width: none;
+}
+
+.about-facts {
+  display: grid;
+  gap: 0.9rem;
+  margin: 1.75rem 0 0;
+}
+
+.about-fact {
+  padding-left: 1rem;
+  border-left: 3px solid var(--color-caramel);
+}
+
+.about-fact dt {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-caramel-text);
+}
+
+.about-fact dd {
+  margin: 0.1rem 0 0;
+}
+
+/* --- Ambition : citation + trois piliers --- */
+.ambition-section {
+  position: relative;
+  background: var(--color-cream-deep);
+}
+
+.ambition {
+  max-width: var(--max-width);
+}
+
+.ambition h2 {
+  font-size: clamp(1.6rem, 3vw, 2rem);
+}
+
+.ambition-quote {
+  max-width: 30ch;
+  margin: 0 0 2.5rem;
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(1.35rem, 2.8vw, 1.9rem);
+  line-height: 1.35;
+  color: var(--color-cacao);
+}
+
+.pillars {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+}
+
+.pillar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1.25rem 1.4rem 1.4rem;
+  background: var(--color-paper);
+  border-top: 3px solid var(--color-caramel);
+  border-radius: 4px 20px 4px 20px;
+  box-shadow: 0 4px 14px rgba(46, 28, 22, 0.06);
+}
+
+.pillar strong {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+}
+
+.pillar span {
+  font-size: 0.92rem;
+  color: var(--color-text-muted);
+}
+
+.contact-cta > .btn-decouvrir {
+  margin-top: 0.5rem;
+}
+
+/* Rangée de boutons d'une bande de fin */
+.cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+/* Adresse cliquable + bouton "Copier" dans la bande contact */
+.contact-direct {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.75rem;
+  margin-top: 1.5rem;
+  font-size: 1.05rem;
+}
+
+.contact-address {
+  font-weight: 600;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--color-caramel);
+  overflow-wrap: anywhere;
+}
+
+.contact-address:hover,
+.contact-address:focus-visible {
+  text-decoration-color: currentColor;
+}
+
+.btn-copy {
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: inherit;
+  background: transparent;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  padding: 0.25rem 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-copy:hover,
+.btn-copy:focus-visible {
+  background-color: var(--color-bg);
+  border-color: var(--color-bg);
+  color: var(--color-cacao);
+}
+
+.btn-copy.is-copied {
+  background-color: var(--color-caramel);
+  border-color: var(--color-caramel);
+  color: var(--color-cacao);
+}
+
+.copy-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+/* --- Téléchargement du CV --- */
+/* Lien discret (sous les boutons du hero) */
+.link-cv {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 1.25rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--color-caramel-text);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 0.2s ease, color 0.2s ease;
+}
+
+.link-cv:hover {
+  color: var(--color-cacao);
+  text-decoration-color: currentColor;
+}
+
+.link-cv svg,
+.btn-cv svg {
+  flex: none;
+  transition: transform 0.2s ease;
+}
+
+.link-cv:hover svg,
+.btn-cv:hover svg {
+  transform: translateY(2px);
+}
+
+.link-cv-meta {
+  font-weight: 400;
+  color: var(--color-text-muted);
+}
+
+/* Bouton "contour" pour les bandes sombres (même gabarit que .btn-decouvrir) */
+.btn-cv {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 10px 16px;
+  border: 1px solid rgba(253, 243, 230, 0.6);
+  border-radius: var(--radius-s);
+  color: #fdf3e6;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.btn-cv:hover {
+  background-color: var(--color-bg);
+  border-color: var(--color-bg);
+  color: var(--color-cacao);
+}
+
+/* ==========================================================================
+   Pied de page
+   ========================================================================== */
+footer {
+  background: var(--color-bg-alt);
+  border-top: 1px solid var(--color-border);
+  padding: 1.5rem 0;
+}
+
+/* Barre fine : l'appel au contact complet vit dans la bande de l'accueil,
+   le pied de page garde seulement un accès direct au mail et les crédits. */
+.footer-container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 2rem;
+}
+
+.email-link {
+  color: var(--color-accent-dark);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.email-link:hover,
+.email-link:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Réservé au retour des liens Instagram / LinkedIn (voir le TODO dans le HTML) */
+.footer-socials {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.footer-socials a {
+  text-decoration: none;
+  color: var(--color-text-muted);
+}
+
+.footer-credits {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 720px) {
+  .footer-container {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.35rem;
+  }
+}
+
+/* ==========================================================================
+   Apparition douce au scroll
+   ========================================================================== */
+.fade-in {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 500ms ease, transform 500ms ease;
+}
+
+.fade-in.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-in {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .creation-media img,
+  .hamburger .bar,
+  .modal,
+  .modal-content,
+  .timeline-logo,
+  .teaser-media img,
+  .teaser-card,
+  .progress-card,
+  .progress-media img,
+  .creation-card,
+  .timeline-content,
+  .hero-slide,
+  .hero-caption,
+  .skip-link,
+  header,
+  .nav-links a::after,
+  .nav-logo img,
+  .link-cv svg,
+  .btn-cv svg,
+  .teaser-link::after {
+    transition: none;
+  }
+
+  /* Pas de zoom lent ni de défilement automatique */
+  .hero-slide.is-active,
+  .hero-slide.is-leaving {
+    animation: none;
+  }
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 720px) {
+  .hamburger {
+    display: flex;
+  }
+
+  .nav-links {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    flex-direction: column;
+    gap: 0;
+    padding: 0.5rem 1.5rem;
+    display: none;
+  }
+
+  .nav-links.is-open {
+    display: flex;
+  }
+
+  .nav-links li {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .nav-links li:last-child {
+    border-bottom: none;
+  }
+
+  .gallery-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* --- Accueil, mobile --- */
+  .hero {
+    grid-template-columns: 1fr;
+    width: calc(100% - 2rem);
+    margin-top: 1rem;
+    padding: 1.25rem 1.25rem 4.5rem;
+  }
+
+  .hero-media {
+    order: -1;
+  }
+
+  .hero-frame {
+    border-radius: 8px 40px 12px 28px;
+  }
+
+  .hero-text {
+    margin-right: 0;
+    margin-top: -15%; /* Le texte mord sur l'image par le bas */
+    padding: 1.75rem 1.5rem;
+  }
+
+  .hero-text h1,
+  .hero-text p {
+    max-width: none;
+  }
+
+  /* La légende passe en haut à gauche : le bas est recouvert par le texte */
+  .hero-caption {
+    top: 0.75rem;
+    left: 0.75rem;
+    right: auto;
+    bottom: auto;
+    max-width: 62%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    padding: 0.4rem 0.85rem;
+    border-radius: 16px;
+    line-height: 1.3;
+  }
+
+  .home-highlights {
+    padding: 0 1rem;
+    margin-bottom: 3rem;
+  }
+
+  .highlights-bar--home {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+  }
+
+  .highlights-bar--home .highlight-item + .highlight-item {
+    border-left: none;
+    border-top: 1px solid var(--color-border);
+    margin-top: 0.75rem;
+    padding-top: 0.9rem;
+  }
+
+  .teaser-section {
+    padding-bottom: 3.5rem;
+  }
+
+  .progress {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .progress-gap {
+    flex-direction: row;
+    min-height: 2.5rem;
+  }
+
+  .progress-gap::before,
+  .progress-gap::after {
+    width: auto;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--color-caramel));
+  }
+
+  .progress-gap::after {
+    background: linear-gradient(to right, var(--color-caramel), transparent);
+  }
+
+  .progress-section {
+    padding: 3rem 0;
+  }
+
+  .about {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .about-photo {
+    max-width: 300px;
+  }
+
+  .about-section {
+    padding-bottom: 3.5rem;
+  }
+
+  .parcours-teaser,
+  .ambition,
+  .contact-cta {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+}

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Parcours de Louis Treels, candidat au CAP Pâtissier en reconversion : formation, expérience professionnelle et motivations vers la pâtisserie de restaurant.">
+    <meta name="theme-color" content="#fcf8f1">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Mon Parcours | Portfolio CAP Pâtisserie">
+    <meta property="og:description" content="Du BUT Informatique au CAP Pâtissier : les étapes de ma reconversion vers la pâtisserie de restaurant.">
+    <title>Mon Parcours | Portfolio CAP Pâtisserie</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="stylesheet" href="css/style.css">
+    <noscript>
+        <!-- Sans JavaScript, on affiche quand même tout ce qui est en fondu au scroll. -->
+        <style>.fade-in { opacity: 1; transform: none; }</style>
+    </noscript>
+</head>
+<body>
+
+    <a class="skip-link" href="#main">Aller au contenu</a>
+
+    <header>
+        <nav>
+            <div class="nav-logo">
+                <!-- Version recadrée sur le visage (images/Photo_Louis_Treels_visage.webp) : le menu est petit, le visage doit remplir le rond -->
+                <img src="images/Photo_Louis_Treels_visage.webp" alt="" width="52" height="52"/>
+                <a href="index.html">Louis Treels</a>
+            </div>
+            <div class="hamburger"><span class="bar"></span><span class="bar"></span><span class="bar"></span></div>
+            <ul class="nav-links">
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="creations.html">Créations</a></li>
+                <li><a href="parcours.html" class="active" aria-current="page">Mon Parcours</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main id="main">
+        <section class="page-header page-header--tall fade-in">
+            <p class="eyebrow">De l'informatique à la pâtisserie</p>
+            <h1>Mon Parcours</h1>
+            <p>De l'architecture logicielle à l'architecture d'un entremets : la même exigence de précision, mise cette fois au service du goût et du partage.</p>
+        </section>
+
+        <!-- Carte de chiffres clés qui chevauche l'en-tête (même composant que l'accueil) -->
+        <section class="home-highlights" aria-label="Chiffres clés">
+            <div class="highlights-bar highlights-bar--home" id="highlights">
+                <!-- Chiffres clés générés automatiquement depuis js/parcours-data.js -->
+            </div>
+        </section>
+
+        <section class="timeline-section">
+            <div class="timeline-container" id="timeline-container">
+                <!-- Étapes générées automatiquement depuis js/parcours-data.js -->
+            </div>
+        </section>
+
+        <!-- Bande de fin : renvoie vers les créations -->
+        <section class="section-cacao band">
+            <div class="contact-cta fade-in">
+                <p class="eyebrow">Créations</p>
+                <h2>Envie de voir où tout ça mène ?</h2>
+                <p>Chaque étape de ce parcours se retrouve dans mes réalisations : technique, régularité, et plaisir de partager.</p>
+                <div class="cta-actions">
+                    <a href="creations.html" class="btn-decouvrir">Découvrir mes créations</a>
+                    <a href="documents/CV_Louis_Treels.pdf" target="_blank" class="btn-cv" download><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg> Télécharger mon CV</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <a href="mailto:louis.treels.pro@gmail.com" class="email-link">louis.treels.pro@gmail.com</a>
+            <!-- TODO : remets ici le bloc <div class="footer-socials"> avec tes liens Instagram / LinkedIn quand les comptes seront prêts -->
+            <p class="footer-credits">&copy; 2026 - Portfolio CAP Pâtisserie</p>
+        </div>
+    </footer>
+
+    <script src="js/parcours-data.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
