@@ -25,6 +25,103 @@
 
 const CREATIONS = [
   {
+    id: "macaronframboise",
+    title: "Le Macaron Framboise Cardamome",
+    tags: ["Entremets", "Créations fruitées"],
+    date: "octobre 2026",
+    images: [
+      {
+        src: "images/macaron_framboise2.webp",
+        alt: "Visuel à la découpe"
+      },
+      {
+        src: "images/macaron_framboise1.webp",
+        alt: "Focus sur l'ensemble de l'entremets."
+      }
+    ],
+    description:
+      "",
+    technique: [
+      { label: "", value: "" },
+      { label: "", value: "" },
+      { label: "", value: "" }
+    ],
+    reflection: {
+      positif: "",
+      axes: ""
+    }
+  },
+  {
+    id: "buffetLHIL",
+    title: "De retour au LHIL ! Préparation du buffet pour la finale des MOF !",
+    tags: ["Apprentissage", "Gâteaux de voyage", "Petits fours"],
+    date: "octobre 2026",
+    images: [
+      {
+        src: "images/brownies.webp",
+        alt: "Focus sur les brownies noix de pécan noisette."
+      },
+      {
+        src: "images/rochers_coco.webp",
+        alt: "Focus sur les rochers coco, recouverts de couverture noire sur la base."
+      },
+      {
+        src: "images/sables_nougatine.webp",
+        alt: "Focus sur les sablés diamants nougatine."
+      },
+      {
+        src: "images/mini_entremets_choc.webp",
+        alt: "Focus sur les mini entremets brownies ganache chocolat."
+      },
+      {
+        src: "images/brownies.webp",
+        alt: "Focus sur les brownies noix de pécan noisette"
+      },
+    ],
+    description:
+      "Pour ma deuxième semaine au LHIL, nous étions chargés de préparer les divers buffets destinés au candidat, élèves et jurys présents sur place à l'occasion de la finale des MOF en cuisine, services des arts de la table, sommellerie et barman. Des chaussons au pommes et aux tartes au sucre pour le petit déjeuner jusqu'à de minis entremets et gâteaux de voyage pour le reste de la journée !",
+    technique: [
+      { label: "", value: "" },
+      { label: "", value: "" },
+      { label: "", value: "" }
+    ],
+    reflection: {
+      positif: "",
+      axes: ""
+    }
+  },
+  {
+    id: "tuttifraise2",
+    title: "Les tartes Tutti et Fraise 1 mois plus tard...",
+    tags: ["Apprentissage", "Créations fruitées"],
+    date: "octobre 2026",
+    images: [
+      {
+        src: "images/tuttifraise.webp",
+        alt: "Vue d'ensemble des tartes tutti et fraise de 6 personnes."
+      },
+      {
+        src: "images/tarte_fraise.webp",
+        alt: "Focus sur la tarte fraise"
+      },
+      {
+        src: "images/tutti3.webp",
+        alt: "Focus sur la tarte tutti"
+      }
+    ],
+    description:
+      "Après plus d'un mois d'apprentissage, voici ma progression sur le dressage et la décoration des tartes tutti et fraise.",
+    technique: [
+      { label: "Garnissage du fond de tarte", value: "Je tapisse généreusement le fond de crème pâtissière." },
+      { label: "Entreposer les fruits", value: "Pour un meilleur rendu, je commence à entreposer les fruits de couleurs chaudes (abricot, pêche, clémentine, ananas) puis j'ajoute les fruits plus colorés (kiwi, fraise, pamplemousse) afin d'apporter un contraste visuel qui attire l'oeil." },
+      { label: "Décoration", value: "Après avoir nappé, je saupoudre le tour de la tarte de neige décor, et entrepose divers fruits rouges sur le dessus de la tarte en finissant par le décor chocolat et l'écusson de l'enseigne !" }
+    ],
+    reflection: {
+      positif: "Je commence à maîtriser plus amplement l'entreposage des fruits. Je trouve mes tartes encore plus belles qu'il y a un mois.",
+      axes: "Il ne reste plus qu'à devenir plus efficace et rapide dans le dressage des tartes. Je suis sur la bonne voie !"
+    }
+  },
+  {
     id: "tartepom",
     title: "La Tarte Aux Pommes Cannelle-Vanille",
     tags: ["Fonçage", "Créations fruitées"],
