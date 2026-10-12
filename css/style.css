@@ -6,34 +6,57 @@
    ========================================================================== */
 
 :root {
+  /* MODE CLAIR / MODE NUIT : chaque couleur à deux versions s'écrit
+     light-dark(clair, nuit). Le thème actif est choisi par color-scheme :
+     - par défaut, celui de l'appareil (prefers-color-scheme) ;
+     - si le visiteur clique sur le bouton soleil/lune, js/theme.js pose
+       data-theme="light" ou "dark" sur <html> et son choix est mémorisé.
+     Pour retoucher la palette de nuit, ne change QUE la 2e valeur. */
+  color-scheme: light dark;
+
   /* Couleurs */
-  --color-bg: #fcf8f1;          /* crème : remplace le blanc cassé froid */
-  --color-bg-alt: #f4eadb;      /* crème foncé (bandes, pied de page) */
-  --color-text: #2b211b;
-  --color-text-muted: #6a5d51;
-  --color-border: #e6d9c4;
+  --color-bg: light-dark(#fcf8f1, #16100c); /* crème / chocolat noir */
+  --color-bg-alt: light-dark(#f4eadb, #1c140f); /* bandes, pied de page */
+  --color-text: light-dark(#2b211b, #f1e7da);
+  --color-text-muted: light-dark(#6a5d51, #bdac9b);
+  --color-border: light-dark(#e6d9c4, #3b2c23);
   --color-accent: #5b6f52;
-  --color-accent-dark: #45543e;
+  --color-accent-dark: light-dark(#45543e, #a9c19b); /* vert des liens : éclairci en nuit */
+  --color-focus: light-dark(#5b6f52, #e2a869); /* contour de focus clavier */
 
   /* Palette "pâtisserie" de l'accueil */
-  --color-cream-deep: #efe0c8;   /* fond des blocs chaleureux */
-  --color-caramel: #c98a4b;      /* = --color-button, pour les décors */
-  --color-caramel-text: #85531f; /* caramel assez foncé pour du petit texte */
-  --color-cacao: #2e1c16;        /* chocolat : bande de contact, hover */
-  --color-paper: #fffdf9;        /* cartes "papier" posées sur le crème */
+  --color-cream-deep: light-dark(#efe0c8, #211711); /* fond des blocs chaleureux */
+  --color-caramel: #c98a4b; /* = --color-button, pour les décors (identique en nuit) */
+  --color-caramel-text: light-dark(#85531f, #e2a869); /* caramel lisible en petit texte */
+  --color-cacao: #2e1c16; /* chocolat FIXE : bandes de contact, texte sur fond clair */
+  --color-cream: #fcf8f1; /* crème FIXE : texte/boutons posés sur les bandes sombres */
+  --color-paper: light-dark(#fffdf9, #2b1f18); /* cartes posées sur le fond */
+  --color-wine: light-dark(#8e3b46, #d9818d); /* bordeaux des icônes/traits (la bande bordeaux reste --badge-verrines) */
   /* Fond "nappage" partagé par le hero de l'accueil et les en-têtes de page */
   --bg-halo:
-    radial-gradient(circle at 10% 15%, rgba(239, 169, 174, 0.32), transparent 42%),
-    radial-gradient(circle at 92% 90%, rgba(201, 138, 75, 0.30), transparent 46%),
-    linear-gradient(135deg, #fbf7f0 0%, #f4e8d8 100%);
-  --shadow-soft: 0 10px 30px rgba(46, 28, 22, 0.08);
-  --shadow-lift: 0 18px 40px rgba(46, 28, 22, 0.14);
+    radial-gradient(circle at 10% 15%, light-dark(rgba(239, 169, 174, 0.32), rgba(142, 59, 70, 0.30)), transparent 42%),
+    radial-gradient(circle at 92% 90%, light-dark(rgba(201, 138, 75, 0.30), rgba(201, 138, 75, 0.18)), transparent 46%),
+    linear-gradient(135deg, light-dark(#fbf7f0, #201611) 0%, light-dark(#f4e8d8, #2b1d15) 100%);
+  --shadow-soft: 0 10px 30px light-dark(rgba(46, 28, 22, 0.08), rgba(0, 0, 0, 0.45));
+  --shadow-lift: 0 18px 40px light-dark(rgba(46, 28, 22, 0.14), rgba(0, 0, 0, 0.55));
+  --shadow-card: 0 4px 14px light-dark(rgba(46, 28, 22, 0.05), rgba(0, 0, 0, 0.30));
+  --shadow-header: 0 6px 24px light-dark(rgba(46, 28, 22, 0.08), rgba(0, 0, 0, 0.45));
+  /* Surfaces translucides, anneaux et pastilles qui changent selon le thème */
+  --header-bg: light-dark(rgba(252, 248, 241, 0.9), rgba(22, 16, 12, 0.88));
+  --hero-text-bg: light-dark(rgba(251, 247, 240, 0.85), rgba(32, 22, 17, 0.82));
+  --count-bg: light-dark(rgba(255, 253, 249, 0.85), rgba(43, 31, 24, 0.85));
+  --outline-hover-bg: light-dark(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.08));
+  --badge-ring: light-dark(transparent, rgba(255, 255, 255, 0.22));
+  --logo-plate: light-dark(transparent, #fcf8f1);
+  --chip-active-bg: light-dark(#2e1c16, #c98a4b);
+  --chip-active-text: light-dark(#fcf8f1, #2e1c16);
   /* Grain de papier très discret (SVG inline, aucune image à charger) */
   --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .4 0 0 0 0 .28 0 0 0 0 .18 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 
   /* Couleurs des badges par tag (voir TAG_COLORS dans js/script.js) —
      ajoute une variable ici + une entrée dans TAG_COLORS si tu veux qu'un
-     nouveau tag ait sa propre couleur plutôt que --color-accent. */
+     nouveau tag ait sa propre couleur plutôt que --color-accent.
+     Identiques dans les deux thèmes. */
   --badge-entremets: #22223b;
   --badge-apprentissage: #4a4e69;
   --badge-fruitees: #9a8c98;
@@ -47,11 +70,11 @@
   /* Bouton "Découvrir" et modale de détails */
   --color-button: #c98a4b;
   --color-button-text: #2e1c16;
-  --color-button-hover-bg: #2e1c16;
-  --color-button-hover-text: #faf6f0;
-  --color-modal-overlay: rgba(46, 28, 22, 0.7);
-  --color-modal-bg: #faf6f0;
-  --color-modal-text: #2e1c16;
+  --color-button-hover-bg: light-dark(#2e1c16, #f1e7da);
+  --color-button-hover-text: light-dark(#faf6f0, #2e1c16);
+  --color-modal-overlay: light-dark(rgba(46, 28, 22, 0.7), rgba(0, 0, 0, 0.78));
+  --color-modal-bg: light-dark(#faf6f0, #241913);
+  --color-modal-text: light-dark(#2e1c16, #f1e7da);
 
   /* Typographie */
   --font-heading: "Fraunces", serif;
@@ -63,6 +86,54 @@
   --max-width: 1080px;
   --transition-base: 220ms ease;
 }
+
+/* Secours pour les très vieux navigateurs sans light-dark() : thème clair */
+@supports not (color: light-dark(red, blue)) {
+  :root {
+    --color-bg: #fcf8f1; /* crème / chocolat noir */
+    --color-bg-alt: #f4eadb; /* bandes, pied de page */
+    --color-text: #2b211b;
+    --color-text-muted: #6a5d51;
+    --color-border: #e6d9c4;
+    --color-accent: #5b6f52;
+    --color-accent-dark: #45543e; /* vert des liens : éclairci en nuit */
+    --color-focus: #5b6f52; /* contour de focus clavier */
+    --color-cream-deep: #efe0c8; /* fond des blocs chaleureux */
+    --color-caramel: #c98a4b; /* = --color-button, pour les décors (identique en nuit) */
+    --color-caramel-text: #85531f; /* caramel lisible en petit texte */
+    --color-cacao: #2e1c16; /* chocolat FIXE : bandes de contact, texte sur fond clair */
+    --color-cream: #fcf8f1; /* crème FIXE : texte/boutons posés sur les bandes sombres */
+    --color-paper: #fffdf9; /* cartes posées sur le fond */
+    --color-wine: #8e3b46; /* bordeaux des icônes/traits (la bande bordeaux reste --badge-verrines) */
+    --bg-halo:
+      radial-gradient(circle at 10% 15%, rgba(239, 169, 174, 0.32), transparent 42%),
+      radial-gradient(circle at 92% 90%, rgba(201, 138, 75, 0.30), transparent 46%),
+      linear-gradient(135deg, #fbf7f0 0%, #f4e8d8 100%);
+    --shadow-soft: 0 10px 30px rgba(46, 28, 22, 0.08);
+    --shadow-lift: 0 18px 40px rgba(46, 28, 22, 0.14);
+    --shadow-card: 0 4px 14px rgba(46, 28, 22, 0.05);
+    --shadow-header: 0 6px 24px rgba(46, 28, 22, 0.08);
+    --header-bg: rgba(252, 248, 241, 0.9);
+    --hero-text-bg: rgba(251, 247, 240, 0.85);
+    --count-bg: rgba(255, 253, 249, 0.85);
+    --outline-hover-bg: rgba(255, 255, 255, 0.6);
+    --badge-ring: transparent;
+    --logo-plate: transparent;
+    --chip-active-bg: #2e1c16;
+    --chip-active-text: #fcf8f1;
+    --color-button: #c98a4b;
+    --color-button-text: #2e1c16;
+    --color-button-hover-bg: #2e1c16;
+    --color-button-hover-text: #faf6f0;
+    --color-modal-overlay: rgba(46, 28, 22, 0.7);
+    --color-modal-bg: #faf6f0;
+    --color-modal-text: #2e1c16;
+  }
+}
+
+/* Choix manuel (bouton soleil/lune) : prioritaire sur le réglage de l'appareil */
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"] { color-scheme: dark; }
 
 /* ==========================================================================
    Reset de base
@@ -116,7 +187,7 @@ button {
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
 
@@ -145,7 +216,7 @@ header {
   top: 0;
   z-index: 20;
   /* Crème légèrement translucide + flou : le contenu glisse doucement dessous */
-  background: rgba(252, 248, 241, 0.9);
+  background: var(--header-bg);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--color-border);
@@ -154,7 +225,7 @@ header {
 
 /* Classe posée par initHeader() (js/script.js) dès qu'on a fait défiler la page */
 header.is-scrolled {
-  box-shadow: 0 6px 24px rgba(46, 28, 22, 0.08);
+  box-shadow: var(--shadow-header);
 }
 
 /* Barre de progression de lecture, collée sous l'en-tête */
@@ -271,6 +342,59 @@ header.is-scrolled .nav-logo img {
 }
 
 /* ==========================================================================
+   Bouton mode clair / mode nuit (injecté dans le menu par js/theme.js)
+   ========================================================================== */
+.nav-links {
+  margin-left: auto;
+}
+
+.theme-toggle {
+  flex: none;
+  order: 3; /* après les liens, à l'extrême droite du menu */
+  width: 40px;
+  height: 40px;
+  margin-left: 1.25rem;
+  padding: 0;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-paper);
+  color: var(--color-text-muted);
+  transition: color var(--transition-base), border-color var(--transition-base), background-color var(--transition-base);
+}
+
+.theme-toggle:hover,
+.theme-toggle:focus-visible {
+  border-color: var(--color-caramel);
+  color: var(--color-caramel-text);
+}
+
+.theme-toggle svg {
+  width: 18px;
+  height: 18px;
+  grid-area: 1 / 1;
+  transition: transform 350ms ease, opacity 250ms ease;
+}
+
+/* On montre l'icône de ce qu'un clic va activer : lune en clair, soleil en nuit */
+.theme-toggle .icon-sun { opacity: 0; transform: rotate(-60deg) scale(0.6); }
+:root[data-theme="dark"] .theme-toggle .icon-sun { opacity: 1; transform: none; }
+:root[data-theme="dark"] .theme-toggle .icon-moon { opacity: 0; transform: rotate(60deg) scale(0.6); }
+
+::selection {
+  background: var(--color-caramel);
+  color: var(--color-cacao);
+}
+
+/* Fondu doux au changement de thème (classe posée 400 ms par js/theme.js) */
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+  transition: background-color 350ms ease, color 350ms ease, border-color 350ms ease, box-shadow 350ms ease !important;
+}
+
+/* ==========================================================================
    En-tête de page
    ========================================================================== */
 .page-header {
@@ -306,7 +430,7 @@ header.is-scrolled .nav-logo img {
   display: inline-block;
   margin: 0.5rem 0 0;
   padding: 0.3rem 0.95rem;
-  background: rgba(255, 253, 249, 0.85);
+  background: var(--count-bg);
   border: 1px solid var(--color-border);
   border-radius: 999px;
   font-size: 0.85rem;
@@ -345,9 +469,9 @@ header.is-scrolled .nav-logo img {
 }
 
 .filter-btn.is-active {
-  background: var(--color-cacao);
-  border-color: var(--color-cacao);
-  color: var(--color-bg);
+  background: var(--chip-active-bg);
+  border-color: var(--chip-active-bg);
+  color: var(--chip-active-text);
 }
 
 /* ==========================================================================
@@ -371,7 +495,7 @@ header.is-scrolled .nav-logo img {
   border-radius: 8px 28px 8px 28px; /* même asymétrie que l'accueil */
   overflow: hidden;
   background: var(--color-paper);
-  box-shadow: 0 4px 14px rgba(46, 28, 22, 0.05);
+  box-shadow: var(--shadow-card);
   display: flex;
   flex-direction: column;
   transition:
@@ -446,11 +570,13 @@ header.is-scrolled .nav-logo img {
   font-size: 0.75rem;
   padding: 0.25rem 0.65rem;
   border-radius: var(--radius-s);
+  /* Liseré clair en mode nuit : les badges sombres ne se fondent pas dans le fond */
+  box-shadow: inset 0 0 0 1px var(--badge-ring);
 }
 
 /* Badges à fond clair : texte foncé pour garder un bon contraste */
 .badge--light {
-  color: var(--color-text);
+  color: var(--color-cacao); /* fixe : le fond de ces badges reste clair en nuit */
 }
 
 .creation-date {
@@ -561,6 +687,7 @@ header.is-scrolled .nav-logo img {
   max-height: 80vh;
   overflow-y: auto;
   position: relative;
+  border: 1px solid var(--color-border);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   transform: scale(0.96);
   transition: transform 200ms ease;
@@ -680,7 +807,7 @@ header.is-scrolled .nav-logo img {
   top: 14px;
   bottom: 14px;
   width: 2px;
-  background: linear-gradient(to bottom, var(--badge-verrines), var(--color-caramel) 45%, var(--color-border));
+  background: linear-gradient(to bottom, var(--color-wine), var(--color-caramel) 45%, var(--color-border));
 }
 
 .timeline-item {
@@ -700,8 +827,8 @@ header.is-scrolled .nav-logo img {
   height: 28px;
   border-radius: 50%;
   background: var(--color-paper);
-  border: 2px solid var(--badge-verrines);
-  color: var(--badge-verrines);
+  border: 2px solid var(--color-wine);
+  color: var(--color-wine);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -711,6 +838,7 @@ header.is-scrolled .nav-logo img {
 /* L'étape la plus récente ressort : pastille pleine */
 .timeline-item:first-child .timeline-icon {
   background: var(--badge-verrines);
+  border-color: var(--badge-verrines);
   color: #fff;
   box-shadow: 0 0 0 5px rgba(142, 59, 70, 0.15);
 }
@@ -735,7 +863,7 @@ header.is-scrolled .nav-logo img {
   background: var(--color-paper);
   border: 1px solid var(--color-border);
   border-radius: 4px 24px 4px 24px;
-  box-shadow: 0 4px 14px rgba(46, 28, 22, 0.05);
+  box-shadow: var(--shadow-card);
   transition: box-shadow 300ms ease, border-color 300ms ease;
 }
 
@@ -749,6 +877,9 @@ header.is-scrolled .nav-logo img {
   width: auto;
   object-fit: contain;
   margin-bottom: 0.75rem;
+  /* Plaquette crème en mode nuit : les logos à texte foncé restent lisibles */
+  background: var(--logo-plate);
+  box-shadow: 0 0 0 6px var(--logo-plate);
   transition: transform 300ms ease;
 }
 
@@ -830,7 +961,7 @@ header.is-scrolled .nav-logo img {
   z-index: 2;
   /* On casse la grille : le texte vient mordre sur l'image à droite */
   margin-right: -15%;
-  background: rgba(251, 247, 240, 0.85); /* Fond givré pour la lisibilité */
+  background: var(--hero-text-bg); /* Fond givré pour la lisibilité */
   padding: 2.5rem;
   border-radius: var(--radius-m);
   backdrop-filter: blur(8px);
@@ -867,9 +998,9 @@ header.is-scrolled .nav-logo img {
 }
 
 .btn-outline:hover {
-  border-color: var(--color-cacao);
-  background-color: rgba(255, 255, 255, 0.6);
-  color: var(--color-cacao);
+  border-color: var(--color-text);
+  background-color: var(--outline-hover-bg);
+  color: var(--color-text);
 }
 
 /* Cadre de l'image principale : il découpe (overflow) le zoom lent, et
@@ -1104,7 +1235,7 @@ header.is-scrolled .nav-logo img {
   border: 1px solid var(--color-border);
   border-radius: 8px 32px 8px 32px; /* même asymétrie que le hero */
   overflow: hidden;
-  box-shadow: 0 4px 14px rgba(46, 28, 22, 0.05);
+  box-shadow: var(--shadow-card);
   /* --stagger : apparition en cascade (posé par renderCreationsTeaser) */
   transition:
     opacity 500ms ease var(--stagger, 0ms),
@@ -1195,7 +1326,7 @@ header.is-scrolled .nav-logo img {
 .section-cacao p { color: rgba(253, 243, 230, 0.88); }
 .section-cacao .eyebrow { color: #f1c99a; }
 .section-cacao .btn-decouvrir:hover {
-  background-color: var(--color-bg);
+  background-color: var(--color-cream);
   color: var(--color-cacao);
 }
 
@@ -1231,8 +1362,8 @@ header.is-scrolled .nav-logo img {
 }
 
 .path-step.is-current {
-  background: var(--color-bg);
-  border-color: var(--color-bg);
+  background: var(--color-cream);
+  border-color: var(--color-cream);
   color: var(--badge-verrines);
   font-weight: 600;
 }
@@ -1265,7 +1396,7 @@ header.is-scrolled .nav-logo img {
   background: var(--color-paper);
   border: 1px solid var(--color-border);
   overflow: hidden;
-  box-shadow: 0 4px 14px rgba(46, 28, 22, 0.06);
+  box-shadow: var(--shadow-card);
   transition:
     opacity 500ms ease,
     transform 500ms ease,
@@ -1509,7 +1640,7 @@ header.is-scrolled .nav-logo img {
   font-weight: 500;
   font-size: clamp(1.35rem, 2.8vw, 1.9rem);
   line-height: 1.35;
-  color: var(--color-cacao);
+  color: var(--color-text);
 }
 
 .pillars {
@@ -1529,7 +1660,7 @@ header.is-scrolled .nav-logo img {
   background: var(--color-paper);
   border-top: 3px solid var(--color-caramel);
   border-radius: 4px 20px 4px 20px;
-  box-shadow: 0 4px 14px rgba(46, 28, 22, 0.06);
+  box-shadow: var(--shadow-card);
 }
 
 .pillar strong {
@@ -1594,8 +1725,8 @@ header.is-scrolled .nav-logo img {
 
 .btn-copy:hover,
 .btn-copy:focus-visible {
-  background-color: var(--color-bg);
-  border-color: var(--color-bg);
+  background-color: var(--color-cream);
+  border-color: var(--color-cream);
   color: var(--color-cacao);
 }
 
@@ -1630,7 +1761,7 @@ header.is-scrolled .nav-logo img {
 }
 
 .link-cv:hover {
-  color: var(--color-cacao);
+  color: var(--color-text);
   text-decoration-color: currentColor;
 }
 
@@ -1665,8 +1796,8 @@ header.is-scrolled .nav-logo img {
 }
 
 .btn-cv:hover {
-  background-color: var(--color-bg);
-  border-color: var(--color-bg);
+  background-color: var(--color-cream);
+  border-color: var(--color-cream);
   color: var(--color-cacao);
 }
 
@@ -1770,6 +1901,8 @@ footer {
   .nav-logo img,
   .link-cv svg,
   .btn-cv svg,
+  .theme-toggle,
+  .theme-toggle svg,
   .teaser-link::after {
     transition: none;
   }
@@ -1787,6 +1920,17 @@ footer {
 @media (max-width: 720px) {
   .hamburger {
     display: flex;
+  }
+
+  /* Le bouton de thème reste visible hors du menu : à gauche du hamburger */
+  .theme-toggle {
+    order: 1;
+    margin-left: auto;
+    margin-right: 0.5rem;
+  }
+
+  .hamburger {
+    order: 2;
   }
 
   .nav-links {
