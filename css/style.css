@@ -66,6 +66,8 @@
   --badge-levees: #046244;
   --badge-petits-fours: #EFA9AE;
   --badge-voyage: #abb557;
+  --badge-formation: #046244; /* parcours : Formation (vert profond) */
+  --badge-experience: #8e3b46; /* parcours : Expérience (bordeaux) */
 
   /* Bouton "Découvrir" et modale de détails */
   --color-button: #c98a4b;
@@ -772,6 +774,7 @@ html.theme-switching *::after {
 }
 
 .highlight-value {
+  font-variant-numeric: tabular-nums;
   font-family: var(--font-heading);
   font-size: 1.6rem;
   font-weight: 600;
@@ -785,80 +788,635 @@ html.theme-switching *::after {
 }
 
 /* ==========================================================================
-   Timeline (parcours.html)
+   En-tête du parcours : texte + mini-cheminement à droite
    ========================================================================== */
-.timeline-section {
-  padding-bottom: 4rem;
+.page-header--split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 2rem 3rem;
 }
 
-.timeline-container {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 0 1.5rem 0 60px;
+.page-header-text > :last-child {
+  margin-bottom: 0;
+}
+
+.header-path {
+  min-width: 15rem;
+  padding: 1.1rem 1.5rem 1.2rem;
+  background: var(--hero-text-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 4px 24px 4px 24px;
+  box-shadow: var(--shadow-card);
+}
+
+.header-path-title {
+  display: block;
+  margin-bottom: 0.8rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-caramel-text);
+}
+
+.header-path ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.header-path li {
   position: relative;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.25rem;
+  padding: 0.32rem 0 0.32rem 1.5rem;
+  font-size: 0.92rem;
+  color: var(--color-text);
 }
 
-/* Ligne verticale en dégradé : vive près d'aujourd'hui, plus neutre vers
-   les étapes anciennes — renforce l'idée de trajectoire qui converge. */
-.timeline-container::before {
+/* Pastille + trait vers l'étape suivante */
+.header-path li::before {
   content: "";
   position: absolute;
-  left: 24px;
-  top: 14px;
-  bottom: 14px;
+  left: 0;
+  top: 0.78rem;
+  width: 11px;
+  height: 11px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  border: 2px solid var(--color-wine);
+  background: var(--color-wine);
+}
+
+.header-path li::after {
+  content: "";
+  position: absolute;
+  left: 4.5px;
+  top: calc(0.78rem + 13px);
+  height: calc(100% - 13px + 0.1rem);
   width: 2px;
-  background: linear-gradient(to bottom, var(--color-wine), var(--color-caramel) 45%, var(--color-border));
+  background: var(--color-border);
 }
 
-.timeline-item {
+.header-path li:last-child::after {
+  display: none;
+}
+
+.header-path li.is-current::before {
+  background: var(--color-caramel);
+  border-color: var(--color-caramel);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-caramel) 28%, transparent);
+}
+
+.header-path li.is-goal::before {
+  background: transparent;
+  border-style: dashed;
+  border-color: var(--color-caramel-text);
+}
+
+.hp-label {
+  font-weight: 500;
+}
+
+.is-current .hp-label {
+  font-weight: 600;
+}
+
+.hp-year {
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 860px) {
+  .page-header--split {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .header-path {
+    min-width: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    box-shadow: none;
+  }
+
+  .header-path-title {
+    margin-bottom: 0.6rem;
+  }
+
+  /* En bandeau de pastilles, comme sur l'accueil */
+  .header-path ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .header-path li {
+    padding: 0.3rem 0.85rem;
+    gap: 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: var(--hero-text-bg);
+  }
+
+  .header-path li::before,
+  .header-path li::after {
+    display: none;
+  }
+
+  .header-path li.is-current {
+    background: var(--chip-active-bg);
+    border-color: var(--chip-active-bg);
+    color: var(--chip-active-text);
+  }
+
+  .header-path li.is-current .hp-year {
+    color: inherit;
+    opacity: 0.85;
+  }
+
+  .header-path li.is-goal {
+    border-style: dashed;
+  }
+}
+
+/* ==========================================================================
+   Frise « En un coup d'œil » : deux pistes (études / travail) sur un même axe
+   ========================================================================== */
+.frise-section {
+  padding: 0 1.5rem 4rem;
+}
+
+.frise-card {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 2rem 2.25rem 1.75rem;
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 8px 28px 8px 28px;
+  box-shadow: var(--shadow-card);
+}
+
+.frise-heading h2 {
+  margin-bottom: 0.4rem;
+  font-size: clamp(1.4rem, 2.6vw, 1.8rem);
+}
+
+.frise-heading p:last-child {
+  max-width: 62ch;
+  margin-bottom: 1.75rem;
+  color: var(--color-text-muted);
+}
+
+.frise-chart {
   position: relative;
-  padding-bottom: 2.5rem;
+  --lane-h: 2.1rem;
+  --lane-gap: 0.4rem;
 }
 
-.timeline-item:last-child {
+/* Axe des années (en haut) */
+.frise-axis {
+  position: relative;
+  height: 2.7rem;
+  margin-bottom: 0.4rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.frise-tick {
+  position: absolute;
+  left: calc(var(--p) * 1%);
+  top: 1.4rem;
+  bottom: 0;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 0 0.25rem 0.4rem;
+  border-left: 1px solid var(--color-border);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+}
+
+.frise-now-tag {
+  position: absolute;
+  left: calc(var(--p) * 1%);
+  top: 0;
+  transform: translateX(-50%);
+  padding: 0.1rem 0.6rem;
+  border-radius: 999px;
+  background: var(--color-caramel);
+  color: var(--color-cacao);
+  font-size: 0.68rem;
+  font-weight: 600;
+  white-space: nowrap;
+  z-index: 2;
+}
+
+.frise-track + .frise-track {
+  margin-top: 0.9rem;
+}
+
+.frise-track-label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-caramel-text);
+}
+
+.frise-lanes {
+  position: relative;
+  height: calc(var(--lanes) * var(--lane-h) + (var(--lanes) - 1) * var(--lane-gap));
+  /* Un trait fin au début de chaque année */
+  background-image: linear-gradient(to right, var(--color-border) 1px, transparent 1px);
+  background-size: calc(100% / var(--years)) 100%;
+}
+
+/* Trait « aujourd'hui » */
+.frise-lanes::after {
+  content: "";
+  position: absolute;
+  top: -0.45rem;
+  bottom: -0.45rem;
+  left: calc(var(--now) * 1%);
+  border-left: 2px dashed var(--color-caramel);
+  pointer-events: none;
+}
+
+.frise-bar {
+  position: absolute;
+  left: calc(var(--s) * 1%);
+  width: calc(var(--w) * 1%);
+  top: calc(var(--lane) * (var(--lane-h) + var(--lane-gap)));
+  z-index: 1; /* au-dessus du trait « aujourd'hui » */
+  height: var(--lane-h);
+  container-type: size;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 0 0.6rem;
+  border-radius: 4px 12px 4px 12px;
+  background: var(--bar);
+  color: #fff; /* fixe : tous les fonds de barre (vert, bordeaux, ardoise) sont sombres */
+  box-shadow: inset 0 0 0 1px var(--badge-ring);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  overflow: hidden;
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.frise-bar:hover,
+.frise-bar:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-soft), inset 0 0 0 1px var(--badge-ring);
+}
+
+.frise-bar-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Trop étroite pour un libellé : on ne garde que la couleur (le titre reste en infobulle) */
+@container (max-width: 56px) {
+  .frise-bar-text { display: none; }
+}
+@container (max-height: 22px) {
+  .frise-bar-text { display: none; }
+}
+
+/* En cours : liseré caramel */
+.frise-bar.is-current {
+  box-shadow: 0 0 0 2px var(--color-paper), 0 0 0 4px var(--color-caramel);
+}
+
+/* À venir : pointillés, fond léger */
+.frise-bar.is-future {
+  background: color-mix(in srgb, var(--bar) 14%, transparent);
+  border: 2px dashed color-mix(in srgb, var(--bar) 55%, var(--color-text));
+  color: var(--color-text);
+  box-shadow: none;
+}
+
+/* Sans fin connue : la barre s'estompe */
+.frise-bar.is-open {
+  -webkit-mask-image: linear-gradient(to right, #000 55%, transparent);
+  mask-image: linear-gradient(to right, #000 55%, transparent);
+}
+
+.frise-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.4rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.frise-legend li {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.frise-swatch {
+  width: 14px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--bar);
+}
+
+.frise-swatch--future {
+  box-sizing: border-box;
+  background: transparent;
+  border: 2px dashed var(--color-caramel-text);
+}
+
+.frise-swatch--now {
+  width: 0;
+  height: 14px;
+  border-radius: 0;
+  background: none;
+  border-left: 2px dashed var(--color-caramel);
+}
+
+/* --- Frise sur mobile : le temps coule vers le bas, deux colonnes --- */
+@media (max-width: 720px) {
+  .frise-section {
+    padding: 0 1rem 3rem;
+  }
+
+  .frise-card {
+    padding: 1.5rem 1.1rem 1.4rem;
+  }
+
+  .frise-chart {
+    display: grid;
+    grid-template-columns: 2.6rem repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto 34rem;
+    column-gap: 0.6rem;
+  }
+
+  .frise-track {
+    display: contents;
+  }
+
+  .frise-track + .frise-track {
+    margin-top: 0;
+  }
+
+  .frise-track--etudes .frise-track-label,
+  .frise-track--etudes .frise-lanes { grid-column: 2; }
+  .frise-track--travail .frise-track-label,
+  .frise-track--travail .frise-lanes { grid-column: 3; }
+
+  .frise-track-label { grid-row: 1; }
+  .frise-lanes { grid-row: 2; height: auto; }
+
+  .frise-lanes {
+    background-image: linear-gradient(to bottom, var(--color-border) 1px, transparent 1px);
+    background-size: 100% calc(100% / var(--years));
+  }
+
+  .frise-axis {
+    grid-column: 1;
+    grid-row: 2;
+    height: auto;
+    margin: 0;
+    border-bottom: none;
+  }
+
+  .frise-tick {
+    left: 0;
+    right: 0;
+    top: calc(var(--p) * 1%);
+    bottom: auto;
+    padding: 0.15rem 0 0;
+    border-left: none;
+    border-top: 1px solid var(--color-border);
+    align-items: flex-start;
+  }
+
+  /* Le libellé ne tient pas : un simple point sur l'axe, le trait fait le reste */
+  .frise-now-tag {
+    left: auto;
+    right: -0.45rem;
+    top: calc(var(--p) * 1%);
+    transform: translateY(-50%);
+    width: 0.8rem;
+    height: 0.8rem;
+    padding: 0;
+    font-size: 0;
+  }
+
+  .frise-lanes::after {
+    top: calc(var(--now) * 1%);
+    bottom: auto;
+    left: -0.3rem;
+    right: -0.3rem;
+    height: 0;
+    border-left: none;
+    border-top: 2px dashed var(--color-caramel);
+  }
+
+  /* Une étape qui en chevauche une autre (ex. le stage Erasmus dans le BUT)
+     se pose par-dessus, sur la moitié droite de la colonne. */
+  .frise-bar {
+    left: 0;
+    width: calc(100% - 3px);
+    top: calc(var(--s) * 1%);
+    height: calc(var(--w) * 1%);
+    align-items: flex-start;
+    padding: 0.3rem 0.4rem;
+    font-size: 0.72rem;
+  }
+
+  .frise-bar:not([data-lane="0"]) {
+    left: 52%;
+    width: calc(48% - 3px);
+    z-index: 2;
+  }
+
+  .frise-bar.is-open {
+    -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent);
+    mask-image: linear-gradient(to bottom, #000 55%, transparent);
+  }
+}
+
+/* ==========================================================================
+   Timeline détaillée (parcours.html) : zig-zag sur ordinateur
+   ========================================================================== */
+.timeline-section {
+  padding: 0 1.5rem 4rem;
+}
+
+.tl-head {
+  max-width: var(--max-width);
+  margin: 0 auto 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+}
+
+.tl-head h2 {
+  margin: 0 0 0.35rem;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+.tl-hint {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+}
+
+/* Réutilise les boutons de filtre des créations, sans leurs marges de page */
+.tl-filter-bar {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tl-count {
+  max-width: var(--max-width);
+  min-height: 1.4em;
+  margin: 0 auto 0.5rem;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.tl-count:empty {
+  min-height: 0;
+  margin: 0;
+}
+
+.timeline {
+  position: relative;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding-top: 1rem;
+}
+
+/* Trait central : gris, et un remplissage coloré qui suit le défilement */
+.tl-line {
+  position: absolute;
+  top: 1.5rem;
+  bottom: 1.5rem;
+  left: 50%;
+  width: 2px;
+  margin-left: -1px;
+  border-radius: 2px;
+  background: var(--color-border);
+}
+
+.tl-line-fill {
+  display: block;
+  width: 100%;
+  height: 0;
+  border-radius: 2px;
+  background: linear-gradient(to bottom, var(--color-wine), var(--color-caramel));
+}
+
+.tl-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 64px minmax(0, 1fr);
+  align-items: start;
+  padding-bottom: 3rem;
+}
+
+.tl-item[hidden] {
+  display: none;
+}
+
+.tl-item:last-of-type {
   padding-bottom: 0;
 }
 
-.timeline-icon {
-  position: absolute;
-  left: -38px;
-  top: 0.2rem;
-  width: 28px;
-  height: 28px;
+.tl-item:focus {
+  outline: none;
+}
+
+/* Colonne centrale : la pastille posée sur le trait */
+.tl-node {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: center;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin-top: 0.3rem;
   border-radius: 50%;
   background: var(--color-paper);
   border: 2px solid var(--color-wine);
   color: var(--color-wine);
+  transition: transform var(--transition-base), border-color var(--transition-base);
+}
+
+.tl-node svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Zig-zag : la carte d'un côté, l'année de l'autre */
+.tl-item.is-left .tl-card { grid-column: 1; margin-right: 0.9rem; }
+.tl-item.is-right .tl-card { grid-column: 3; margin-left: 0.9rem; }
+.tl-card { grid-row: 1; }
+
+.tl-when {
+  grid-row: 1;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding-top: 0.45rem;
 }
 
-/* L'étape la plus récente ressort : pastille pleine */
-.timeline-item:first-child .timeline-icon {
-  background: var(--badge-verrines);
-  border-color: var(--badge-verrines);
-  color: #fff;
-  box-shadow: 0 0 0 5px rgba(142, 59, 70, 0.15);
+.tl-item.is-left .tl-when {
+  grid-column: 3;
+  align-items: flex-start;
+  padding-left: 1.6rem;
+  text-align: left;
 }
 
-.timeline-icon svg {
-  width: 14px;
-  height: 14px;
+.tl-item.is-right .tl-when {
+  grid-column: 1;
+  align-items: flex-end;
+  padding-right: 1.6rem;
+  text-align: right;
 }
 
-.timeline-date {
+.tl-year {
+  font-family: var(--font-heading);
+  font-size: clamp(1.6rem, 3vw, 2.3rem);
+  font-weight: 600;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-caramel-text);
+}
+
+.tl-dates {
   font-size: 0.78rem;
   font-weight: 600;
-  color: var(--color-caramel-text);
-  text-transform: uppercase;
   letter-spacing: 0.1em;
-  margin-bottom: 0.6rem;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
 }
 
-/* Chaque étape devient une carte "papier" */
-.timeline-content {
+/* La carte « papier » */
+.tl-card {
   padding: 1.25rem 1.4rem 1.4rem;
   background: var(--color-paper);
   border: 1px solid var(--color-border);
@@ -867,12 +1425,81 @@ html.theme-switching *::after {
   transition: box-shadow 300ms ease, border-color 300ms ease;
 }
 
-.timeline-item:hover .timeline-content {
+.tl-item:hover .tl-card,
+.tl-item.is-active .tl-card {
   border-color: var(--color-caramel);
   box-shadow: var(--shadow-lift);
 }
 
-.timeline-logo {
+.tl-item.is-active .tl-node {
+  transform: scale(1.1);
+  border-color: var(--color-caramel);
+}
+
+/* En cours : pastille pleine qui "respire" */
+.tl-item.is-current .tl-node {
+  background: var(--color-caramel);
+  border-color: var(--color-caramel);
+  color: var(--color-cacao);
+  animation: tl-pulse 2.6s ease-out infinite;
+}
+
+/* À venir : pointillés */
+.tl-item.is-future .tl-card {
+  background: color-mix(in srgb, var(--color-caramel) 7%, var(--color-bg));
+  border: 2px dashed color-mix(in srgb, var(--color-caramel) 65%, var(--color-border));
+  box-shadow: none;
+}
+
+.tl-item.is-future .tl-node {
+  background: var(--color-bg);
+  border-style: dashed;
+  border-color: var(--color-caramel-text);
+  color: var(--color-caramel-text);
+}
+
+@keyframes tl-pulse {
+  0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-caramel) 55%, transparent); }
+  80%, 100% { box-shadow: 0 0 0 14px transparent; }
+}
+
+@keyframes tl-flash {
+  0%, 60% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-caramel) 55%, transparent), var(--shadow-lift); }
+  100% { box-shadow: var(--shadow-lift); }
+}
+
+.tl-item.is-flash .tl-card {
+  animation: tl-flash 1.6s ease-out;
+}
+
+/* Badges + statut en haut de carte */
+.tl-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.85rem;
+}
+
+.tl-status {
+  margin-left: auto;
+  padding: 0.18rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.tl-status--current {
+  background: var(--chip-active-bg);
+  color: var(--chip-active-text);
+}
+
+.tl-status--future {
+  border: 1px dashed var(--color-caramel-text);
+  color: var(--color-caramel-text);
+}
+
+.tl-logo {
   max-height: 36px;
   width: auto;
   object-fit: contain;
@@ -880,19 +1507,20 @@ html.theme-switching *::after {
   /* Plaquette crème en mode nuit : les logos à texte foncé restent lisibles */
   background: var(--logo-plate);
   box-shadow: 0 0 0 6px var(--logo-plate);
+  transform-origin: left center;
   transition: transform 300ms ease;
 }
 
-.timeline-item:hover .timeline-logo {
+.tl-item:hover .tl-logo {
   transform: scale(1.08);
 }
 
-.timeline-content h3 {
+.tl-card h3 {
   font-size: 1.3rem;
   margin-bottom: 0.15rem;
 }
 
-.timeline-content h4 {
+.tl-card h4 {
   font-family: var(--font-body);
   font-weight: 500;
   font-size: 0.95rem;
@@ -900,9 +1528,278 @@ html.theme-switching *::after {
   margin: 0 0 0.75rem;
 }
 
-.timeline-content p {
+/* Durée calculée + lieu */
+.tl-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1.1rem;
+  margin: 0 0 0.85rem;
+  padding: 0;
+  list-style: none;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.tl-facts li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.tl-fact-icon svg {
+  display: block;
+  width: 15px;
+  height: 15px;
+  color: var(--color-caramel-text);
+}
+
+/* Description repliable */
+.tl-desc {
   margin: 0;
   max-width: 65ch;
+}
+
+.tl-desc.is-clamped {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  overflow: hidden;
+}
+
+.tl-more {
+  margin-top: 0.4rem;
+  padding: 0.2rem 0;
+  border: none;
+  background: none;
+  color: var(--color-accent-dark);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.tl-more:hover {
+  color: var(--color-caramel-text);
+}
+
+/* « Ce que j'en retiens » */
+.tl-takeaway {
+  margin: 1rem 0 0;
+  padding: 0.15rem 0 0.15rem 1rem;
+  border-left: 3px solid var(--color-caramel);
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 1.02rem;
+  line-height: 1.45;
+  color: var(--color-text);
+}
+
+.tl-takeaway-label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-caramel-text);
+}
+
+/* Témoignage du maître d'apprentissage (seulement s'il est rempli) */
+.tl-testimonial {
+  margin: 1rem 0 0;
+  padding: 1rem 1.15rem;
+  background: var(--color-bg-alt);
+  border-radius: 4px 18px 4px 18px;
+}
+
+.tl-testimonial blockquote {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-size: 1.02rem;
+  line-height: 1.5;
+}
+
+.tl-testimonial blockquote::before {
+  content: "“";
+  margin-right: 0.15em;
+  font-size: 1.6em;
+  line-height: 0;
+  vertical-align: -0.25em;
+  color: var(--color-caramel);
+}
+
+.tl-testimonial figcaption {
+  margin-top: 0.6rem;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+/* Photos de l'étape (seulement si elles sont renseignées) */
+.tl-photos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.tl-photos img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 4px 14px 4px 14px;
+}
+
+/* Réalisations liées : vignettes vers la fiche de la création */
+.tl-works {
+  margin-top: 1.1rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.tl-works-label {
+  display: block;
+  margin-bottom: 0.55rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.tl-works-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tl-works-list a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  overflow: hidden;
+  border: 2px solid var(--color-paper);
+  border-radius: 4px 16px 4px 16px;
+  box-shadow: 0 0 0 1px var(--color-border);
+  text-decoration: none;
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.tl-works-list a:hover,
+.tl-works-list a:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 2px var(--color-caramel);
+}
+
+.tl-works-list img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tl-works-list .tl-works-more {
+  background: var(--color-bg-alt);
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* Repère « Vous êtes ici » : entre l'avenir et le présent */
+.tl-here {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: max-content;
+  max-width: 100%;
+  margin: 0 auto 2.5rem;
+  padding: 0.4rem 1.1rem 0.4rem 0.8rem;
+  background: var(--color-paper);
+  border: 1.5px solid var(--color-caramel);
+  border-radius: 999px;
+  box-shadow: var(--shadow-card);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.tl-here[hidden] {
+  display: none;
+}
+
+.tl-here-dot {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-caramel);
+  animation: tl-pulse 2.6s ease-out infinite;
+}
+
+/* --- Timeline sur mobile : une seule colonne, trait à gauche --- */
+@media (max-width: 720px) {
+  .timeline-section {
+    padding: 0 1rem 3rem;
+  }
+
+  .tl-line {
+    left: 22px;
+  }
+
+  .tl-item {
+    grid-template-columns: 44px minmax(0, 1fr);
+    padding-bottom: 2rem;
+  }
+
+  .tl-node {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    width: 36px;
+    height: 36px;
+  }
+
+  .tl-node svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .tl-item.is-left .tl-when,
+  .tl-item.is-right .tl-when {
+    grid-column: 2;
+    grid-row: 1;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.1rem 0.7rem;
+    padding: 0.25rem 0 0.55rem;
+    text-align: left;
+  }
+
+  .tl-year {
+    font-size: 1.35rem;
+  }
+
+  .tl-item.is-left .tl-card,
+  .tl-item.is-right .tl-card {
+    grid-column: 2;
+    grid-row: 2;
+    margin: 0;
+    padding: 1.1rem 1.1rem 1.2rem;
+  }
+
+  .tl-here {
+    margin: 0 auto 1.75rem 3px;
+  }
 }
 
 /* ==========================================================================
@@ -1643,6 +2540,62 @@ html.theme-switching *::after {
   color: var(--color-text);
 }
 
+/* Feuille de route : trois étapes (la 1re est en cours, les suivantes sont des objectifs) */
+.roadmap {
+  list-style: none;
+  margin: 0 0 0.9rem;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1.25rem;
+  counter-reset: roadmap;
+}
+
+.roadmap-step {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1.25rem 1.4rem 1.4rem;
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 4px 20px 4px 20px;
+  box-shadow: var(--shadow-card);
+  font-size: 0.92rem;
+  color: var(--color-text-muted);
+}
+
+.roadmap-step.is-current {
+  border-color: var(--color-caramel);
+}
+
+/* Étapes à venir : pointillés, comme sur la page Parcours */
+.roadmap-step.is-goal {
+  background: color-mix(in srgb, var(--color-caramel) 7%, var(--color-bg));
+  border: 2px dashed color-mix(in srgb, var(--color-caramel) 65%, var(--color-border));
+  box-shadow: none;
+}
+
+.roadmap-when {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-caramel-text);
+}
+
+.roadmap-step strong {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  color: var(--color-text);
+}
+
+.roadmap-note {
+  margin: 0 0 2.5rem;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
 .pillars {
   list-style: none;
   margin: 0;
@@ -1886,13 +2839,16 @@ footer {
   .hamburger .bar,
   .modal,
   .modal-content,
-  .timeline-logo,
+  .tl-logo,
+  .tl-node,
+  .frise-bar,
+  .tl-works-list a,
   .teaser-media img,
   .teaser-card,
   .progress-card,
   .progress-media img,
   .creation-card,
-  .timeline-content,
+  .tl-card,
   .hero-slide,
   .hero-caption,
   .skip-link,
@@ -1905,6 +2861,13 @@ footer {
   .theme-toggle svg,
   .teaser-link::after {
     transition: none;
+  }
+
+  /* Pas de pulsation sur la frise ni la timeline */
+  .tl-item.is-current .tl-node,
+  .tl-here-dot,
+  .tl-item.is-flash .tl-card {
+    animation: none;
   }
 
   /* Pas de zoom lent ni de défilement automatique */

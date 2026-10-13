@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Parcours de Louis Treels, candidat au CAP Pâtissier en reconversion : formation, expérience professionnelle et motivations vers la pâtisserie de restaurant.">
+    <meta name="description" content="Parcours de Louis Treels, candidat au CAP Pâtissier en reconversion : formation, expérience professionnelle et feuille de route vers les certificats de spécialisation à Paris, puis le brevet technique des métiers.">
     <meta name="theme-color" content="#fcf8f1">
     <!-- Mode nuit : doit rester ICI, avant la feuille de style, pour éviter l'éclair blanc au chargement -->
     <script src="js/theme.js"></script>
     <meta property="og:type" content="website">
     <meta property="og:title" content="Mon Parcours | Portfolio CAP Pâtisserie">
-    <meta property="og:description" content="Du BUT Informatique au CAP Pâtissier : les étapes de ma reconversion vers la pâtisserie de restaurant.">
+    <meta property="og:description" content="Du BUT Informatique au CAP Pâtissier, puis Paris et le brevet technique des métiers : les étapes de ma reconversion.">
     <title>Mon Parcours | Portfolio CAP Pâtisserie</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -44,10 +44,23 @@
     </header>
 
     <main id="main">
-        <section class="page-header page-header--tall fade-in">
-            <p class="eyebrow">De l'informatique à la pâtisserie</p>
-            <h1>Mon Parcours</h1>
-            <p>De l'architecture logicielle à l'architecture d'un entremets : la même exigence de précision, mise cette fois au service du goût et du partage.</p>
+        <section class="page-header page-header--tall page-header--split fade-in">
+            <div class="page-header-text">
+                <p class="eyebrow">De l'informatique à la pâtisserie</p>
+                <h1>Mon Parcours</h1>
+                <p>De l'architecture logicielle à l'architecture d'un entremets : la même exigence de précision, mise cette fois au service du goût et du partage.</p>
+            </div>
+            <!-- Cheminement en un coup d'œil (même idée que sur l'accueil). À tenir à jour à la main. -->
+            <aside class="header-path" aria-label="Mon cheminement">
+                <span class="header-path-title">Le chemin</span>
+                <ol>
+                    <li class="is-done"><span class="hp-label">Bac général</span><span class="hp-year">2024</span></li>
+                    <li class="is-done"><span class="hp-label">BUT Informatique</span><span class="hp-year">2026</span></li>
+                    <li class="is-current"><span class="hp-label">CAP Pâtissier</span><span class="hp-year">2027</span></li>
+                    <li class="is-goal"><span class="hp-label">CS à Paris</span><span class="hp-year">2029</span></li>
+                    <li class="is-goal"><span class="hp-label">BTM</span><span class="hp-year">après</span></li>
+                </ol>
+            </aside>
         </section>
 
         <!-- Carte de chiffres clés qui chevauche l'en-tête (même composant que l'accueil) -->
@@ -57,8 +70,34 @@
             </div>
         </section>
 
-        <section class="timeline-section">
-            <div class="timeline-container" id="timeline-container">
+        <!-- En un coup d'œil : études et travail sur un même axe du temps (générée par renderFrise) -->
+        <section class="frise-section" aria-labelledby="frise-title">
+            <div class="frise-card fade-in">
+                <div class="frise-heading">
+                    <p class="eyebrow">En un coup d'œil</p>
+                    <h2 id="frise-title">Études et travail, côte à côte</h2>
+                    <p>Pendant mon BUT, je travaillais déjà : les deux pistes se chevauchent, comme mes deux univers. Cliquez sur une barre pour aller à l'étape.</p>
+                </div>
+                <div class="frise" id="frise">
+                    <!-- Générée automatiquement depuis js/parcours-data.js -->
+                </div>
+            </div>
+        </section>
+
+        <section class="timeline-section" aria-labelledby="timeline-title">
+            <div class="tl-head">
+                <div>
+                    <p class="eyebrow">Étape par étape</p>
+                    <h2 id="timeline-title">Mon parcours en détail</h2>
+                    <p class="tl-hint">Les étapes en pointillés sont des objectifs : leurs dates sont indicatives.</p>
+                </div>
+                <div class="filter-bar tl-filter-bar" id="tl-filter-bar" role="group" aria-label="Filtrer les étapes par catégorie">
+                    <!-- Boutons générés automatiquement depuis les tags de js/parcours-data.js -->
+                </div>
+            </div>
+            <p class="tl-count" id="tl-count" role="status" aria-live="polite"></p>
+
+            <div class="timeline" id="timeline-container">
                 <!-- Étapes générées automatiquement depuis js/parcours-data.js -->
             </div>
         </section>
@@ -85,6 +124,7 @@
         </div>
     </footer>
 
+    <script src="js/creations-data.js"></script>
     <script src="js/parcours-data.js"></script>
     <script src="js/script.js"></script>
 </body>

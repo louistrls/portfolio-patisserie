@@ -63,6 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initHeader();
   initHamburger();
   renderGallery();
+  renderFrise();
   renderTimeline();
   renderHighlights();
   renderHero();
@@ -276,8 +277,10 @@ function previewText(text, limit) {
 }
 
 /* ----------------------------------------------------------------------
- * Timeline (parcours.html) : rendue depuis TIMELINE (js/parcours-data.js).
- * Ne fait rien sur les pages qui n'ont pas ce conteneur (creations.html).
+ * Parcours (parcours.html) : frise « En un coup d'œil » + timeline détaillée,
+ * rendues depuis TIMELINE (js/parcours-data.js). Ne font rien sur les pages
+ * qui n'ont pas ces conteneurs. Tout ce qui dépend de la date du jour
+ * (étapes à venir, « Vous êtes ici », durées) est calculé automatiquement.
  * ------------------------------------------------------------------- */
 
 /* Icônes par type d'étape. Trait simple, une seule couleur (currentColor)
@@ -295,62 +298,676 @@ const ICONS = {
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 9l10-5 10 5-10 5-10-5z"/><path d="M6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>'
 };
 
+/* Petites icônes de la ligne « durée · lieu » */
+const META_ICONS = {
+  duree:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+  lieu:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>'
+};
+
+/* Nombre maximal de vignettes « Réalisations liées » par étape. */
+const TIMELINE_MAX_VIGNETTES = 5; // réalisations liées affichées par étape
+
+/* Ordre des filtres ; les tags inconnus passent après. */
+const TIMELINE_FILTER_ORDER = ["Formation", "Expérience", "Apprentissage"];
+
+/* Couleurs des tags du parcours (en plus de celles des créations). */
+TAG_COLORS["Formation"] = "var(--badge-formation)";
+TAG_COLORS["Expérience"] = "var(--badge-experience)";
+
+/* --- Dates : tout est converti en « indice de mois » (année * 12 + mois - 1) --- */
+function monthIndex(year, month) {
+  return year * 12 + (month - 1);
+}
+
+function parseYearMonth(text) {
+  const m = /^(\d{4})-(\d{1,2})$/.exec(String(text || "").trim());
+  return m ? monthIndex(Number(m[1]), Number(m[2])) : null;
+}
+
+/* Repli quand start/end sont absents : lit le texte ("Août 2026", "2024").
+   Une année seule désigne une année scolaire : septembre → juin. */
+function parseDatePart(part, asEnd) {
+  const words = String(part || "").toLowerCase().trim().split(/\s+/);
+  const year = parseInt(words[words.length - 1], 10);
+  if (Number.isNaN(year)) return null;
+  const month = words.length > 1 ? MOIS_FR[words[0]] : null;
+  return monthIndex(year, month || (asEnd ? 6 : 9));
+}
+
+function getStepRange(step) {
+  const parts = String(step.date || "").split(/\s+[-–—→]\s+/);
+  const open = Boolean(step.open);
+  let start = parseYearMonth(step.start);
+  if (start === null) start = parseDatePart(parts[0], false);
+  let end = open ? null : parseYearMonth(step.end);
+  if (end === null && !open) end = parseDatePart(parts[parts.length - 1], true);
+  if (start === null) return null;
+  if (!open && (end === null || end < start)) end = start;
+  return { start, end, open };
+}
+
+function getStepStatus(range, nowIdx) {
+  if (range.start > nowIdx) return "future";
+  if (range.open || range.end >= nowIdx) return "current";
+  return "past";
+}
+
+function getStepDuration(step, range) {
+  if (step.duration) return step.duration;
+  if (range.open) return "";
+  const months = range.end - range.start + 1;
+  return months >= 2 ? formatDuration(months) : "";
+}
+
+function getYearLabel(range) {
+  const first = Math.floor(range.start / 12);
+  if (range.open) return `${first} →`;
+  const last = Math.floor(range.end / 12);
+  return first === last ? String(first) : `${first} – ${last}`;
+}
+
+function stepId(step, index) {
+  return `etape-${step.id || index + 1}`;
+}
+
+function currentMonthIndex() {
+  const now = new Date();
+  return monthIndex(now.getFullYear(), now.getMonth() + 1);
+}
+
+/* Les données enrichies : une seule fois, partagées par frise et timeline. */
+function getTimelineSteps() {
+  if (typeof TIMELINE === "undefined") return [];
+  const nowIdx = currentMonthIndex();
+  return TIMELINE.map((step, index) => {
+    const range = getStepRange(step);
+    return {
+      step,
+      index,
+      range,
+      domId: stepId(step, index),
+      status: range ? getStepStatus(range, nowIdx) : "past",
+      tags: step.tags && step.tags.length ? step.tags : []
+    };
+  });
+}
+
+function formatMonthYear(monthIdx) {
+  const names = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+  return `${names[monthIdx % 12]} ${Math.floor(monthIdx / 12)}`;
+}
+
+function cssTagColor(tag) {
+  return TAG_COLORS[tag] || DEFAULT_BADGE_COLOR;
+}
+
+/* ----------------------------------------------------------------------
+ * Frise « En un coup d'œil » : deux pistes (études / travail) sur un même
+ * axe du temps. Horizontale sur ordinateur, verticale sur mobile (la même
+ * structure, la mise en page est faite en CSS).
+ * ------------------------------------------------------------------- */
+function renderFrise() {
+  const host = document.getElementById("frise");
+  if (!host) return;
+  const steps = getTimelineSteps().filter((s) => s.range);
+  if (steps.length === 0) {
+    host.closest(".frise-section")?.remove();
+    return;
+  }
+
+  const nowIdx = currentMonthIndex();
+  const OPEN_SPAN = 12; // une étape sans fin est dessinée sur 12 mois, estompée
+  const bars = steps.map((s) => {
+    const first = s.tags[0] || "Expérience";
+    const endExcl = (s.range.open ? s.range.start + OPEN_SPAN : s.range.end) + 1;
+    return { ...s, track: first === "Formation" ? "etudes" : "travail", color: cssTagColor(first), first, from: s.range.start, to: endExcl };
+  });
+
+  // Axe : de janvier de la 1re année à décembre de la dernière
+  const minIdx = Math.min(...bars.map((b) => b.from));
+  const maxIdx = Math.max(...bars.map((b) => b.to), nowIdx);
+  const axisStart = Math.floor(minIdx / 12) * 12;
+  const axisEnd = (Math.floor((maxIdx - 1) / 12) + 1) * 12;
+  const span = axisEnd - axisStart;
+  const pct = (idx) => ((idx - axisStart) / span) * 100;
+
+  // Couloirs : deux étapes qui se chevauchent de plus d'un mois ne partagent pas la même ligne
+  function assignLanes(list) {
+    const lanes = [];
+    list.sort((a, b) => a.from - b.from).forEach((bar) => {
+      let lane = lanes.findIndex((end) => bar.from >= end - 1);
+      if (lane === -1) { lane = lanes.length; lanes.push(0); }
+      lanes[lane] = bar.to;
+      bar.lane = lane;
+    });
+    return Math.max(lanes.length, 1);
+  }
+  const tracks = [
+    { key: "etudes", label: "Études", items: bars.filter((b) => b.track === "etudes") },
+    { key: "travail", label: "Travail", items: bars.filter((b) => b.track === "travail") }
+  ].filter((t) => t.items.length > 0);
+
+  const chart = document.createElement("div");
+  chart.className = "frise-chart";
+  chart.style.setProperty("--years", span / 12);
+
+  // Axe des années
+  const axis = document.createElement("div");
+  axis.className = "frise-axis";
+  axis.setAttribute("aria-hidden", "true");
+  for (let year = axisStart / 12; year < axisEnd / 12; year++) {
+    const tick = document.createElement("span");
+    tick.className = "frise-tick";
+    tick.style.setProperty("--p", pct(year * 12).toFixed(3));
+    tick.textContent = year;
+    axis.appendChild(tick);
+  }
+  const nowTag = document.createElement("span");
+  nowTag.className = "frise-now-tag";
+  nowTag.style.setProperty("--p", pct(nowIdx + 0.5).toFixed(3));
+  nowTag.textContent = "Aujourd'hui";
+  axis.appendChild(nowTag);
+  chart.appendChild(axis);
+
+  tracks.forEach((track) => {
+    const laneCount = assignLanes(track.items);
+    const wrap = document.createElement("div");
+    wrap.className = `frise-track frise-track--${track.key}`;
+
+    const label = document.createElement("span");
+    label.className = "frise-track-label";
+    label.textContent = track.label;
+
+    const lanes = document.createElement("div");
+    lanes.className = "frise-lanes";
+    lanes.style.setProperty("--lanes", laneCount);
+    lanes.style.setProperty("--now", pct(nowIdx + 0.5).toFixed(3));
+
+    track.items.forEach((bar) => {
+      const link = document.createElement("a");
+      link.className = `frise-bar is-${bar.status}`;
+      if (bar.range.open) link.classList.add("is-open");
+      link.href = `#${bar.domId}`;
+      link.dataset.target = bar.domId;
+      link.style.setProperty("--bar", bar.color);
+      link.style.setProperty("--s", pct(bar.from).toFixed(3));
+      link.style.setProperty("--w", (pct(bar.to) - pct(bar.from)).toFixed(3));
+      link.style.setProperty("--lane", bar.lane);
+      link.dataset.lane = bar.lane;
+      const name = bar.step.short || bar.step.title;
+      const period = bar.step.date;
+      const state = bar.status === "future" ? " (objectif)" : bar.status === "current" ? " (en cours)" : "";
+      link.setAttribute("aria-label", `${bar.step.title}, ${period}${state}. Aller à l'étape.`);
+      link.title = `${bar.step.title} · ${period}`;
+      const text = document.createElement("span");
+      text.className = "frise-bar-text";
+      text.textContent = name;
+      link.appendChild(text);
+      lanes.appendChild(link);
+    });
+
+    wrap.append(label, lanes);
+    chart.appendChild(wrap);
+  });
+
+  // Légende : une pastille par catégorie présente + pointillés + trait du jour
+  const legend = document.createElement("ul");
+  legend.className = "frise-legend";
+  const seen = [...new Set(bars.map((b) => b.first))];
+  seen.forEach((tag) => {
+    const li = document.createElement("li");
+    const sw = document.createElement("span");
+    sw.className = "frise-swatch";
+    sw.style.setProperty("--bar", cssTagColor(tag));
+    li.append(sw, document.createTextNode(tag));
+    legend.appendChild(li);
+  });
+  if (bars.some((b) => b.status === "future")) {
+    const li = document.createElement("li");
+    const sw = document.createElement("span");
+    sw.className = "frise-swatch frise-swatch--future";
+    li.append(sw, document.createTextNode("Objectif (dates indicatives)"));
+    legend.appendChild(li);
+  }
+  const liNow = document.createElement("li");
+  const swNow = document.createElement("span");
+  swNow.className = "frise-swatch frise-swatch--now";
+  liNow.append(swNow, document.createTextNode("Aujourd'hui"));
+  legend.appendChild(liNow);
+
+  host.replaceChildren(chart, legend);
+
+  // Un clic sur une barre : on lève les filtres puis on glisse jusqu'à l'étape
+  chart.addEventListener("click", (event) => {
+    const link = event.target.closest(".frise-bar");
+    if (!link) return;
+    event.preventDefault();
+    goToTimelineStep(link.dataset.target);
+  });
+}
+
+/* ----------------------------------------------------------------------
+ * Timeline détaillée (zig-zag sur ordinateur, une colonne sur mobile)
+ * ------------------------------------------------------------------- */
+let timelineFilter = "all";
+
 function renderTimeline() {
   const container = document.getElementById("timeline-container");
   if (!container || typeof TIMELINE === "undefined") return;
 
+  const steps = getTimelineSteps();
   container.innerHTML = "";
-  TIMELINE.forEach((step, index) => container.appendChild(buildTimelineItem(step, index)));
+
+  // Trait qui se remplit au scroll
+  const line = document.createElement("div");
+  line.className = "tl-line";
+  line.setAttribute("aria-hidden", "true");
+  const fill = document.createElement("span");
+  fill.className = "tl-line-fill";
+  line.appendChild(fill);
+  container.appendChild(line);
+
+  steps.forEach((s) => container.appendChild(buildTimelineItem(s)));
+  container.appendChild(buildHereMarker());
+
+  renderTimelineFilters(steps);
+  layoutTimeline();
+
+  initTimelineScroll(container);
+  window.addEventListener("resize", debounce(updateReadMoreAll, 150));
+  window.addEventListener("load", updateReadMoreAll);
+
+  // Lien direct (parcours.html#etape-xxx) : la page est générée après le
+  // chargement, le navigateur n'a donc pas pu défiler tout seul.
+  const hash = decodeURIComponent(window.location.hash.slice(1));
+  if (hash && document.getElementById(hash)) {
+    setTimeout(() => goToTimelineStep(hash), 150);
+  }
 }
 
-function buildTimelineItem(step, index) {
-  const item = document.createElement("div");
-  item.className = "timeline-item fade-in";
-  // Apparition en cascade : chaque étape suit la précédente avec un léger
-  // décalage plutôt que d'apparaître toutes en même temps au scroll.
-  item.style.transitionDelay = `${Math.min(index * 100, 400)}ms`;
+function debounce(fn, delay) {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), delay);
+  };
+}
 
-  if (step.icon && ICONS[step.icon]) {
-    const icon = document.createElement("span");
-    icon.className = "timeline-icon";
-    icon.innerHTML = ICONS[step.icon];
-    icon.setAttribute("aria-hidden", "true");
-    item.appendChild(icon);
+function buildHereMarker() {
+  const here = document.createElement("div");
+  here.className = "tl-here";
+  here.id = "tl-here";
+  const dot = document.createElement("span");
+  dot.className = "tl-here-dot";
+  dot.setAttribute("aria-hidden", "true");
+  const text = document.createElement("span");
+  text.textContent = `Vous êtes ici · ${formatMonthYear(currentMonthIndex())}`;
+  here.append(dot, text);
+  return here;
+}
+
+function buildTimelineItem(s) {
+  const { step, range, status, tags } = s;
+  const item = document.createElement("article");
+  item.className = `tl-item is-${status} fade-in`;
+  item.id = s.domId;
+  item.tabIndex = -1;
+  item.dataset.tags = tags.join("|");
+  item.dataset.status = status;
+
+  // Côté « date » : année en grand + libellé exact
+  const when = document.createElement("div");
+  when.className = "tl-when";
+  if (range) {
+    const year = document.createElement("span");
+    year.className = "tl-year";
+    year.textContent = getYearLabel(range);
+    when.appendChild(year);
+  }
+  // Le libellé exact n'apparaît que s'il apporte quelque chose de plus que l'année en grand
+  const yearText = range ? getYearLabel(range) : "";
+  if (step.date.replace(/\s*[-–—]\s*/, " – ") !== yearText) {
+    const dates = document.createElement("span");
+    dates.className = "tl-dates";
+    dates.textContent = step.date;
+    when.appendChild(dates);
   }
 
-  const date = document.createElement("div");
-  date.className = "timeline-date";
-  date.textContent = step.date;
+  // Pastille sur la ligne
+  const node = document.createElement("span");
+  node.className = "tl-node";
+  node.setAttribute("aria-hidden", "true");
+  if (step.icon && ICONS[step.icon]) node.innerHTML = ICONS[step.icon];
 
-  const content = document.createElement("div");
-  content.className = "timeline-content";
+  const card = document.createElement("div");
+  card.className = "tl-card";
+
+  // Badges + statut
+  const top = document.createElement("div");
+  top.className = "tl-top";
+  tags.forEach((tag) => top.appendChild(createBadge(tag)));
+  if (status !== "past") {
+    const chip = document.createElement("span");
+    chip.className = `tl-status tl-status--${status}`;
+    chip.textContent = status === "future" ? "Objectif" : "En cours";
+    top.appendChild(chip);
+  }
+  if (top.children.length) card.appendChild(top);
 
   if (step.logo) {
     const logo = document.createElement("img");
-    logo.className = "timeline-logo";
+    logo.className = "tl-logo";
     logo.src = step.logo.src;
     logo.alt = step.logo.alt || "";
-    content.appendChild(logo);
+    logo.loading = "lazy";
+    card.appendChild(logo);
   }
 
   const title = document.createElement("h3");
   title.textContent = step.title;
-
   const subtitle = document.createElement("h4");
   subtitle.textContent = step.subtitle;
+  card.append(title, subtitle);
 
+  // Durée calculée + lieu
+  const duration = range ? getStepDuration(step, range) : "";
+  if (duration || step.place) {
+    const facts = document.createElement("ul");
+    facts.className = "tl-facts";
+    if (duration) facts.appendChild(buildFact(META_ICONS.duree, duration));
+    if (step.place) facts.appendChild(buildFact(META_ICONS.lieu, step.place));
+    card.appendChild(facts);
+  }
+
+  // Description repliable
   const desc = document.createElement("p");
+  desc.className = "tl-desc is-clamped";
+  desc.id = `${s.domId}-desc`;
   desc.textContent = step.description;
+  card.appendChild(desc);
 
-  content.append(title, subtitle, desc);
-  item.append(date, content);
+  const more = document.createElement("button");
+  more.type = "button";
+  more.className = "tl-more";
+  more.hidden = true;
+  more.textContent = "Lire la suite";
+  more.setAttribute("aria-expanded", "false");
+  more.setAttribute("aria-controls", desc.id);
+  more.addEventListener("click", () => {
+    const open = more.getAttribute("aria-expanded") !== "true";
+    desc.classList.toggle("is-clamped", !open);
+    more.setAttribute("aria-expanded", String(open));
+    more.textContent = open ? "Réduire" : "Lire la suite";
+  });
+  card.appendChild(more);
+
+  // « Ce que j'en retiens »
+  if (usableText(step.takeaway)) {
+    const take = document.createElement("p");
+    take.className = "tl-takeaway";
+    const label = document.createElement("span");
+    label.className = "tl-takeaway-label";
+    label.textContent = status === "future" ? "Ce que j'en attends" : "Ce que j'en retiens";
+    take.append(label, document.createTextNode(step.takeaway));
+    card.appendChild(take);
+  }
+
+  // Témoignage (n'apparaît que s'il est rempli)
+  const t = step.testimonial;
+  if (t && usableText(t.text)) {
+    const fig = document.createElement("figure");
+    fig.className = "tl-testimonial";
+    const quote = document.createElement("blockquote");
+    quote.textContent = t.text;
+    fig.appendChild(quote);
+    const who = [t.author, t.role].filter(Boolean).join(" · ");
+    if (who) {
+      const cap = document.createElement("figcaption");
+      cap.textContent = who;
+      fig.appendChild(cap);
+    }
+    card.appendChild(fig);
+  }
+
+  // Photos de l'étape (n'apparaissent que si elles sont renseignées)
+  const photos = (step.photos || []).filter((p) => p && p.src).slice(0, 3);
+  if (photos.length) {
+    const row = document.createElement("div");
+    row.className = "tl-photos";
+    photos.forEach((p) => {
+      const img = document.createElement("img");
+      img.src = p.src;
+      img.alt = p.alt || "";
+      img.loading = "lazy";
+      row.appendChild(img);
+    });
+    card.appendChild(row);
+  }
+
+  // Réalisations liées : vignettes qui ouvrent la fiche de la création
+  const works = buildLinkedWorks(step.creations);
+  if (works) card.appendChild(works);
+
+  item.append(when, node, card);
   return item;
+}
+
+function buildFact(iconSvg, text) {
+  const li = document.createElement("li");
+  const icon = document.createElement("span");
+  icon.className = "tl-fact-icon";
+  icon.innerHTML = iconSvg;
+  li.append(icon, document.createTextNode(text));
+  return li;
+}
+
+function buildLinkedWorks(ids) {
+  if (!Array.isArray(ids) || typeof CREATIONS === "undefined") return null;
+  const found = ids
+    .map((id) => CREATIONS.find((c) => c.id === id))
+    .filter((c) => c && c.images && c.images.length > 0);
+  if (found.length === 0) return null;
+
+  const box = document.createElement("div");
+  box.className = "tl-works";
+  const label = document.createElement("span");
+  label.className = "tl-works-label";
+  label.textContent = found.length > 1 ? "Réalisations liées" : "Réalisation liée";
+  const list = document.createElement("ul");
+  list.className = "tl-works-list";
+
+  found.slice(0, TIMELINE_MAX_VIGNETTES).forEach((creation) => {
+    const li = document.createElement("li");
+    const a = document.createElement("a");
+    a.href = `creations.html#${creation.id}`;
+    a.setAttribute("aria-label", `Voir « ${creation.title} »`);
+    a.title = creation.title;
+    const img = document.createElement("img");
+    img.src = creation.images[0].src;
+    img.alt = "";
+    img.loading = "lazy";
+    a.appendChild(img);
+    li.appendChild(a);
+    list.appendChild(li);
+  });
+  if (found.length > TIMELINE_MAX_VIGNETTES) {
+    const li = document.createElement("li");
+    const a = document.createElement("a");
+    a.className = "tl-works-more";
+    a.href = "creations.html";
+    a.textContent = `+${found.length - TIMELINE_MAX_VIGNETTES}`;
+    a.setAttribute("aria-label", "Voir toutes les créations");
+    li.appendChild(a);
+    list.appendChild(li);
+  }
+
+  box.append(label, list);
+  return box;
+}
+
+/* --- Filtres (Tout / Formation / Expérience…) --- */
+function renderTimelineFilters(steps) {
+  const bar = document.getElementById("tl-filter-bar");
+  if (!bar) return;
+
+  const all = [...new Set(steps.flatMap((s) => s.tags))];
+  all.sort((a, b) => {
+    const ia = TIMELINE_FILTER_ORDER.indexOf(a);
+    const ib = TIMELINE_FILTER_ORDER.indexOf(b);
+    return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
+  });
+  if (all.length === 0) {
+    bar.remove();
+    return;
+  }
+
+  bar.innerHTML = "";
+  bar.appendChild(createFilterButton("Tout", "all", true));
+  all.forEach((tag) => bar.appendChild(createFilterButton(tag, tag, false)));
+
+  bar.addEventListener("click", (event) => {
+    const btn = event.target.closest(".filter-btn");
+    if (btn) setTimelineFilter(btn.dataset.filter);
+  });
+}
+
+function setTimelineFilter(value) {
+  timelineFilter = value;
+  const bar = document.getElementById("tl-filter-bar");
+  if (bar) {
+    bar.querySelectorAll(".filter-btn").forEach((b) => {
+      const active = b.dataset.filter === value;
+      b.classList.toggle("is-active", active);
+      b.setAttribute("aria-pressed", String(active));
+    });
+  }
+  layoutTimeline();
+}
+
+/* Affiche/masque selon le filtre, ré-alterne gauche/droite sur les étapes
+   visibles, et replace le repère « Vous êtes ici ». */
+function layoutTimeline() {
+  const container = document.getElementById("timeline-container");
+  if (!container) return;
+
+  const items = [...container.querySelectorAll(".tl-item")];
+  let visibleCount = 0;
+  items.forEach((item) => {
+    const show = timelineFilter === "all" || item.dataset.tags.split("|").includes(timelineFilter);
+    item.hidden = !show;
+    item.classList.remove("is-left", "is-right");
+    if (show) {
+      item.classList.add(visibleCount % 2 === 0 ? "is-left" : "is-right");
+      visibleCount++;
+    }
+  });
+
+  // « Vous êtes ici » : juste avant la 1re étape visible qui n'est pas à venir
+  const here = document.getElementById("tl-here");
+  if (here) {
+    const firstNow = items.find((i) => !i.hidden && i.dataset.status !== "future");
+    if (firstNow) {
+      container.insertBefore(here, firstNow);
+      here.hidden = false;
+    } else {
+      here.hidden = true;
+    }
+  }
+
+  const status = document.getElementById("tl-count");
+  if (status) {
+    status.textContent = timelineFilter === "all"
+      ? ""
+      : `${visibleCount} étape${visibleCount > 1 ? "s" : ""} affichée${visibleCount > 1 ? "s" : ""}`;
+  }
+
+  requestAnimationFrame(() => {
+    updateReadMoreAll();
+    updateTimelineScroll();
+  });
+}
+
+/* « Lire la suite » n'apparaît que si le texte est réellement coupé. */
+function updateReadMoreAll() {
+  document.querySelectorAll(".tl-item:not([hidden])").forEach((item) => {
+    const desc = item.querySelector(".tl-desc");
+    const more = item.querySelector(".tl-more");
+    if (!desc || !more) return;
+    if (more.getAttribute("aria-expanded") === "true") return;
+    desc.classList.add("is-clamped");
+    more.hidden = desc.scrollHeight <= desc.clientHeight + 1;
+  });
+}
+
+function goToTimelineStep(domId) {
+  if (timelineFilter !== "all") setTimelineFilter("all");
+  const target = document.getElementById(domId);
+  if (!target) return;
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // Le temps que la mise en page se refasse après la levée du filtre
+  requestAnimationFrame(() => {
+    target.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+    target.focus({ preventScroll: true });
+    target.classList.remove("is-flash");
+    void target.offsetWidth; // relance l'animation
+    target.classList.add("is-flash");
+    history.replaceState(null, "", `#${domId}`);
+  });
+}
+
+/* --- Trait qui se remplit + étape active, selon le défilement --- */
+let updateTimelineScroll = () => {};
+
+function initTimelineScroll(container) {
+  const fill = container.querySelector(".tl-line-fill");
+  const line = container.querySelector(".tl-line");
+  let waiting = false;
+
+  updateTimelineScroll = () => {
+    waiting = false;
+    const readY = window.innerHeight * 0.55; // la « ligne de lecture »
+    const lineRect = line.getBoundingClientRect();
+    const filled = Math.min(Math.max(readY - lineRect.top, 0), lineRect.height);
+    fill.style.height = `${filled}px`;
+
+    let best = null;
+    let bestDist = Infinity;
+    container.querySelectorAll(".tl-item:not([hidden])").forEach((item) => {
+      const r = item.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > window.innerHeight) {
+        item.classList.remove("is-active");
+        return;
+      }
+      const dist = readY >= r.top && readY <= r.bottom ? 0 : Math.min(Math.abs(readY - r.top), Math.abs(readY - r.bottom));
+      if (dist < bestDist) {
+        bestDist = dist;
+        best = item;
+      }
+    });
+    container.querySelectorAll(".tl-item.is-active").forEach((i) => {
+      if (i !== best) i.classList.remove("is-active");
+    });
+    if (best) best.classList.add("is-active");
+  };
+
+  const schedule = () => {
+    if (!waiting) {
+      waiting = true;
+      requestAnimationFrame(updateTimelineScroll);
+    }
+  };
+  window.addEventListener("scroll", schedule, { passive: true });
+  window.addEventListener("resize", schedule);
+  updateTimelineScroll();
 }
 
 /* Chiffres clés (parcours.html ET accueil). Ne fait rien si le conteneur
    ou les données n'existent pas (creations.html, par exemple). Sur
    l'accueil (variante .highlights-bar--home), chaque chiffre apparaît en
-   cascade au scroll. */
+   cascade au scroll. Sur le parcours, les chiffres « comptent » jusqu'à
+   leur valeur quand ils entrent à l'écran. */
 function renderHighlights() {
   const bar = document.getElementById("highlights");
   if (!bar || typeof HIGHLIGHTS === "undefined") return;
@@ -377,6 +994,50 @@ function renderHighlights() {
     item.append(value, label);
     bar.appendChild(item);
   });
+
+  if (document.getElementById("timeline-container")) initCountUp(bar);
+}
+
+/* Compte de 0 à la valeur : "3 ans" -> 0 ans, 1 ans… 3 ans. Le texte final
+   est toujours celui du fichier de données ; sans animation possible
+   (mouvement réduit, vieux navigateur), il reste affiché tel quel. */
+function initCountUp(bar) {
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce || !("IntersectionObserver" in window)) return;
+
+  const targets = [];
+  bar.querySelectorAll(".highlight-value").forEach((el) => {
+    const m = /^(\d+)(.*)$/.exec(el.textContent.trim());
+    if (!m) return;
+    targets.push({ el, to: Number(m[1]), suffix: m[2], final: el.textContent });
+    el.textContent = `0${m[2]}`;
+  });
+  if (targets.length === 0) return;
+
+  const run = ({ el, to, suffix, final }) => {
+    const duration = 1100;
+    const t0 = performance.now();
+    const tick = (now) => {
+      const p = Math.min((now - t0) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      const n = Math.round(to * eased);
+      // "1 an" / "2 ans" : le pluriel suit le nombre pendant le décompte
+      const word = suffix.replace(/^(\s*)ans?(?![\wÀ-ÿ])/, (_, sp) => `${sp}${n > 1 ? "ans" : "an"}`);
+      el.textContent = p < 1 ? `${n}${word}` : final;
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  };
+
+  const observer = new IntersectionObserver((entries, obs) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      const t = targets.find((x) => x.el === entry.target);
+      if (t) run(t);
+      obs.unobserve(entry.target);
+    });
+  }, { threshold: 0.5 });
+  targets.forEach((t) => observer.observe(t.el));
 }
 
 /* ----------------------------------------------------------------------
