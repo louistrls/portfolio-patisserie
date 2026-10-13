@@ -26,11 +26,11 @@ const TIMELINE = [
   {
     date: "Avril 2026 - Juillet 2026",
     title: "Le Stage Erasmus de Deuxième Année",
-    subtitle: "Instituto Superior de Enghenaria de Coimbra, Portugal",
+    subtitle: "Instituto Superior de Engenharia de Coimbra, Portugal",
     icon: "ordinateur",
-    logo: { src: "images/IUTA_logo.webp", alt: "Logo de l'IUT A de Lille" },
+    logo: { src: "images/isec_logo.webp", alt: "Logo de l'ISEC" },
     description:
-      "Dans le cadre de mon stage à l'étranger, j'ai eu la chance de travailler pour un entrepôt de maintenance ferroviaire situé à Porto. Ma mission consistait à développer un modèle de deep-learning capable de détecter en temps réel des composants de pantographes, afin de réduire les erreurs de supervision humaines. L'enjeu principal était de trouver un compromis entre puissance de calcul et poids du modèle afin de pouvoir l'implémanter sur smartphone, puis sur lunettes à réalité augmentée à l'avenir."
+      "Dans le cadre de mon stage à l'étranger, j'ai eu la chance de travailler pour un entrepôt de maintenance ferroviaire situé à Porto. Ma mission consistait à développer un modèle de deep-learning depuis mon université d'accueil à Coimbra capable de détecter en temps réel des composants de pantographes, afin de réduire les erreurs de supervision humaines. L'enjeu principal était de trouver un compromis entre puissance de calcul et poids du modèle afin de pouvoir l'implémenter sur smartphone, puis sur lunettes à réalité augmentée à l'avenir."
   },
   {
     date: "2024 - 2026",
