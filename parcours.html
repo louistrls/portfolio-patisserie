@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Parcours de Louis Treels, candidat au CAP Pâtissier en reconversion : formation, expérience professionnelle et feuille de route vers le Certificat de Spécialisation Pâtisserie de boutique, puis le brevet technique des métiers.">
     <meta name="theme-color" content="#fcf8f1">
-    <!-- Mode nuit : doit rester ICI, avant la feuille de style, pour éviter l'éclair blanc au chargement -->
     <script src="js/theme.js"></script>
     <meta property="og:type" content="website">
     <meta property="og:title" content="Mon Parcours | Portfolio CAP Pâtisserie">
@@ -26,7 +25,6 @@
     <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
     <link rel="stylesheet" href="css/style.css">
     <noscript>
-        <!-- Sans JavaScript, on affiche quand même tout ce qui est en fondu au scroll. -->
         <style>.fade-in { opacity: 1; transform: none; }</style>
     </noscript>
 </head>
@@ -37,7 +35,6 @@
     <header>
         <nav>
             <div class="nav-logo">
-                <!-- Version recadrée sur le visage (images/Photo_Louis_Treels_visage.webp) : le menu est petit, le visage doit remplir le rond -->
                 <img src="images/Photo_Louis_Treels_visage.webp" alt="" width="52" height="52"/>
                 <a href="index.html">Louis Treels</a>
             </div>
@@ -58,7 +55,6 @@
                 <h1>Mon Parcours</h1>
                 <p>De l'architecture logicielle à l'architecture d'un entremets : la même exigence de précision, mise cette fois au service du goût et du partage.</p>
             </div>
-            <!-- Cheminement en un coup d'œil (même idée que sur l'accueil). À tenir à jour à la main. -->
             <aside class="header-path" aria-label="Mon cheminement">
                 <span class="header-path-title">Le chemin</span>
                 <ol>
@@ -71,23 +67,19 @@
             </aside>
         </section>
 
-        <!-- Carte de chiffres clés qui chevauche l'en-tête (même composant que l'accueil) -->
         <section class="home-highlights" aria-label="Chiffres clés">
             <div class="highlights-bar highlights-bar--home" id="highlights">
-                <!-- Chiffres clés générés automatiquement depuis js/parcours-data.js -->
             </div>
         </section>
 
-        <!-- En un coup d'œil : études et travail sur un même axe du temps (générée par renderFrise) -->
         <section class="frise-section" aria-labelledby="frise-title">
             <div class="frise-card fade-in">
                 <div class="frise-heading">
                     <p class="eyebrow">En un coup d'œil</p>
                     <h2 id="frise-title">Études et travail, côte à côte</h2>
-                    <p>Pendant mon BUT, je travaillais déjà : les deux pistes se chevauchent, comme mes deux univers. Cliquez sur une barre pour aller à l'étape.</p>
+                    <p>Pendant mon DUT, je travaillais déjà : les deux pistes se chevauchent, comme mes deux univers. Cliquez sur une barre pour aller à l'étape.</p>
                 </div>
                 <div class="frise" id="frise">
-                    <!-- Générée automatiquement depuis js/parcours-data.js -->
                 </div>
             </div>
         </section>
@@ -100,17 +92,14 @@
                     <p class="tl-hint">Les étapes en pointillés sont des objectifs : leurs dates sont indicatives.</p>
                 </div>
                 <div class="filter-bar tl-filter-bar" id="tl-filter-bar" role="group" aria-label="Filtrer les étapes par catégorie">
-                    <!-- Boutons générés automatiquement depuis les tags de js/parcours-data.js -->
                 </div>
             </div>
             <p class="tl-count" id="tl-count" role="status" aria-live="polite"></p>
 
             <div class="timeline" id="timeline-container">
-                <!-- Étapes générées automatiquement depuis js/parcours-data.js -->
             </div>
         </section>
 
-        <!-- Bande de fin : renvoie vers les créations -->
         <section class="section-cacao band">
             <div class="contact-cta fade-in">
                 <p class="eyebrow">Créations</p>
