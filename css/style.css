@@ -483,13 +483,123 @@ html.theme-switching *::after {
   padding-bottom: 4rem;
 }
 
+/* Filtres (à gauche) + taille des cartes (à droite) */
+.gallery-toolbar {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 1.5rem 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+}
+
+.gallery-toolbar .filter-bar {
+  flex: 1 1 28rem;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.view-switch {
+  flex: none;
+  display: inline-flex;
+  padding: 3px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+}
+
+.view-switch[hidden] {
+  display: none;
+}
+
+.view-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.8rem;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  transition: background-color var(--transition-base), color var(--transition-base);
+}
+
+.view-btn svg {
+  flex: none;
+  width: 15px;
+  height: 15px;
+}
+
+.view-btn:hover {
+  color: var(--color-text);
+}
+
+.view-btn[aria-pressed="true"] {
+  background: var(--chip-active-bg);
+  color: var(--chip-active-text);
+}
+
+/* Grille. La taille des cartes est pilotée par trois variables :
+   --card-min (largeur minimale d'une carte), --card-gap (espacement)
+   et --desc-lines (lignes d'aperçu de la description). auto-fill garde
+   des cartes de taille constante même quand un filtre n'en laisse qu'une. */
 .gallery-grid {
+  --card-min: 320px;
+  --card-gap: 2rem;
+  --desc-lines: 3;
   max-width: var(--max-width);
   margin: 0 auto;
   padding: 0 1.5rem;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(var(--card-min), 100%), 1fr));
+  gap: var(--card-gap);
+}
+
+/* Grandes : deux colonnes, aperçu plus long */
+.gallery-grid--lg {
+  --card-min: 420px;
+  --desc-lines: 5;
+}
+
+/* Petites : 4 à 5 colonnes, photo + titre + date */
+.gallery-grid--sm {
+  --card-min: 190px;
+  --card-gap: 1rem;
+}
+
+.gallery-grid--sm .creation-card {
+  border-radius: 6px 20px 6px 20px;
+}
+
+.gallery-grid--sm .creation-body {
+  padding: 0.8rem 0.9rem 0.95rem;
+  gap: 0.45rem;
+}
+
+.gallery-grid--sm .creation-card h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.gallery-grid--sm .creation-card .creation-desc,
+.gallery-grid--sm .creation-card .btn-decouvrir,
+.gallery-grid--sm .creation-card .creation-meta .badge:not(:first-child) {
+  display: none;
+}
+
+.gallery-grid--sm .badge {
+  font-size: 0.68rem;
+  padding: 0.15rem 0.5rem;
+}
+
+/* La date se range à côté du badge, ou dessous s'il n'y a pas la place */
+.gallery-grid--sm .creation-date {
+  margin-left: 0;
+  font-size: 0.72rem;
 }
 
 .creation-card {
@@ -500,6 +610,7 @@ html.theme-switching *::after {
   box-shadow: var(--shadow-card);
   display: flex;
   flex-direction: column;
+  cursor: pointer; /* toute la carte ouvre la fiche */
   transition:
     opacity 500ms ease,
     transform 500ms ease,
@@ -548,6 +659,7 @@ html.theme-switching *::after {
 }
 
 .creation-body {
+  flex: 1; /* les boutons d'une même rangée s'alignent en bas */
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
@@ -594,6 +706,16 @@ html.theme-switching *::after {
 .creation-desc {
   color: var(--color-text-muted);
   margin: 0;
+}
+
+/* Sur les cartes seulement (pas dans la fiche) : aperçu coupé après
+   --desc-lines lignes, avec « … » automatique. */
+.creation-card .creation-desc {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--desc-lines, 3);
+  line-clamp: var(--desc-lines, 3);
+  overflow: hidden;
 }
 
 .tech-list {
@@ -1868,6 +1990,7 @@ html.theme-switching *::after {
 .hero-text h1 {
   font-size: clamp(1.9rem, 3.4vw, 2.7rem);
   max-width: 18ch;
+  text-wrap: balance; /* lignes équilibrées : pas de mot seul sur la dernière */
 }
 
 .hero-text p {
@@ -2922,8 +3045,75 @@ footer {
     border-bottom: none;
   }
 
-  .gallery-grid {
+  /* --- Créations, mobile : grandes = 1 colonne (affichage d'origine),
+     moyennes = 2 colonnes compactes, petites = 3 colonnes de photos --- */
+  .gallery-grid,
+  .gallery-grid--lg {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .gallery-grid--md {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.9rem;
+  }
+
+  .gallery-grid--md .creation-card {
+    border-radius: 6px 20px 6px 20px;
+  }
+
+  .gallery-grid--md .creation-body {
+    padding: 0.75rem 0.8rem 0.9rem;
+    gap: 0.4rem;
+  }
+
+  .gallery-grid--md .creation-card h2 {
+    margin: 0;
+    font-size: 0.98rem;
+  }
+
+  .gallery-grid--md .creation-card .creation-desc,
+  .gallery-grid--md .creation-card .btn-decouvrir,
+  .gallery-grid--md .creation-card .creation-meta .badge:not(:first-child) {
+    display: none;
+  }
+
+  .gallery-grid--md .badge {
+    font-size: 0.66rem;
+    padding: 0.15rem 0.45rem;
+  }
+
+  .gallery-grid--md .creation-date {
+    margin-left: 0;
+    font-size: 0.7rem;
+  }
+
+  .gallery-grid--sm {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.45rem;
+  }
+
+  .gallery-grid--sm .creation-card {
+    border-radius: 4px 14px 4px 14px;
+  }
+
+  .gallery-grid--sm .creation-body {
+    display: none; /* la photo suffit ; le titre reste lu par les lecteurs d'écran (aria-label) */
+  }
+
+  .gallery-grid--sm .creation-media {
+    aspect-ratio: 1 / 1;
+  }
+
+  .gallery-grid--sm .media-count {
+    right: 0.3rem;
+    bottom: 0.3rem;
+    padding: 0.1rem 0.35rem;
+    font-size: 0.65rem;
+  }
+
+  .view-btn {
+    padding: 0.35rem 0.65rem;
   }
 
   /* --- Accueil, mobile --- */

@@ -1,6 +1,39 @@
-/* Longueur maximale de l'aperçu de description affiché sur une carte,
-   avant de basculer sur "Découvrir ma création" pour lire la suite. */
-const APERCU_MAX_LONGUEUR = 110;
+/* La longueur de l'aperçu de description sur une carte dépend maintenant de
+   la taille d'affichage choisie (grandes / moyennes / petites) : elle est
+   réglée en CSS (--desc-lines dans css/style.css), plus en JS. */
+
+/* ----------------------------------------------------------------------
+ * Créations publiées / en préparation
+ *
+ * Une création n'apparaît sur le site qu'une fois sa description rédigée.
+ * Tant qu'elle est vide (photos ajoutées « sur le tas »), elle reste dans
+ * js/creations-data.js mais n'est affichée NULLE PART : galerie, compteur,
+ * filtres, accueil, progression, réalisations liées du parcours.
+ * Pour cacher à la main une création déjà rédigée : ajoute-lui masquer: true.
+ * ------------------------------------------------------------------- */
+function isPublished(creation) {
+  return Boolean(
+    creation &&
+    !creation.masquer &&
+    Array.isArray(creation.images) &&
+    creation.images.length > 0 &&
+    usableText(creation.description)
+  );
+}
+
+function getPublishedCreations() {
+  if (typeof CREATIONS === "undefined") return [];
+  return CREATIONS.filter(isPublished);
+}
+
+/* Pense-bête dans la console du navigateur (F12) : ce qui attend d'être rédigé. */
+function logDrafts() {
+  if (typeof CREATIONS === "undefined" || !window.console) return;
+  const drafts = CREATIONS.filter((c) => !isPublished(c)).map((c) => c.id);
+  if (drafts.length) {
+    console.info(`Créations masquées (description vide ou masquer: true) : ${drafts.join(", ")}`);
+  }
+}
 
 /* Couleur de badge par tag. Ajoute une ligne ici quand tu inventes un
    nouveau tag dans js/creations-data.js si tu veux qu'il ait sa propre
@@ -9,7 +42,7 @@ const APERCU_MAX_LONGUEUR = 110;
 const TAG_COLORS = {
   "Entremets": "var(--badge-entremets)",
   "Pâte à choux": "var(--badge-choux)",
-  "Verrines & Desserts à l'assiette": "var(--badge-verrines)",
+  "Verrines": "var(--badge-verrines)",
   "Créations fruitées": "var(--badge-fruitees)",
   "Gâteaux de voyage": "var(--badge-voyage)",
   "Pâtes levées": "var(--badge-levees)",
@@ -145,25 +178,72 @@ function renderGallery() {
   const grid = document.getElementById("gallery-grid");
   if (!grid || typeof CREATIONS === "undefined") return;
 
-  updateCount();
-  renderFilters();
+  const creations = getPublishedCreations();
+  logDrafts();
+  updateCount(creations);
+  renderFilters(creations);
+  initViewSwitch(grid);
 
   grid.innerHTML = "";
-  CREATIONS.forEach((creation) => grid.appendChild(buildCard(creation)));
+  creations.forEach((creation) => grid.appendChild(buildCard(creation)));
 }
 
-function updateCount() {
+function updateCount(creations) {
   const countEl = document.getElementById("gallery-count");
   if (!countEl) return;
-  const n = CREATIONS.length;
+  const n = creations.length;
   countEl.textContent = `${n} création${n > 1 ? "s" : ""} documentée${n > 1 ? "s" : ""}`;
 }
 
-function renderFilters() {
+/* ----------------------------------------------------------------------
+ * Taille des cartes (grandes / moyennes / petites). Le choix du visiteur est
+ * mémorisé dans son navigateur. Par défaut : moyennes sur ordinateur,
+ * grandes sur mobile (= l'affichage d'origine sur les deux).
+ * Les mises en page elles-mêmes sont dans css/style.css (.gallery-grid--lg,
+ * --md, --sm).
+ * ------------------------------------------------------------------- */
+const GALLERY_SIZES = ["lg", "md", "sm"];
+const GALLERY_SIZE_KEY = "gallery-size";
+
+function initViewSwitch(grid) {
+  const box = document.getElementById("view-switch");
+  if (!box) return;
+
+  let size = window.matchMedia("(max-width: 720px)").matches ? "lg" : "md";
+  try {
+    const saved = window.localStorage.getItem(GALLERY_SIZE_KEY);
+    if (GALLERY_SIZES.includes(saved)) size = saved;
+  } catch (e) {
+    /* stockage bloqué (navigation privée…) : on garde la taille par défaut */
+  }
+
+  const apply = (value) => {
+    GALLERY_SIZES.forEach((s) => grid.classList.toggle(`gallery-grid--${s}`, s === value));
+    box.querySelectorAll(".view-btn").forEach((btn) => {
+      btn.setAttribute("aria-pressed", String(btn.dataset.size === value));
+    });
+  };
+
+  apply(size);
+  box.hidden = false; // sans JavaScript, les boutons ne serviraient à rien : ils restent cachés
+
+  box.addEventListener("click", (event) => {
+    const btn = event.target.closest(".view-btn");
+    if (!btn || !GALLERY_SIZES.includes(btn.dataset.size)) return;
+    apply(btn.dataset.size);
+    try {
+      window.localStorage.setItem(GALLERY_SIZE_KEY, btn.dataset.size);
+    } catch (e) {
+      /* pas grave : le choix vaudra pour cette visite seulement */
+    }
+  });
+}
+
+function renderFilters(creations) {
   const filterBar = document.getElementById("filter-bar");
   if (!filterBar) return;
 
-  const allTags = CREATIONS.flatMap((c) => c.tags || []);
+  const allTags = creations.flatMap((c) => c.tags || []);
   const uniqueTags = [...new Set(allTags)];
 
   filterBar.innerHTML = "";
@@ -204,6 +284,8 @@ function buildCard(creation) {
   const article = document.createElement("article");
   article.className = "creation-card fade-in";
   article.dataset.tags = creation.tags ? creation.tags.join("|") : "";
+  // Toute la carte ouvre la fiche (utile en petites cartes, où le bouton est masqué)
+  article.dataset.creationId = creation.id;
 
   article.appendChild(buildMedia(creation));
   article.appendChild(buildBody(creation));
@@ -253,9 +335,10 @@ function buildBody(creation) {
   const title = document.createElement("h2");
   title.textContent = creation.title;
 
+  // Texte complet : il est coupé proprement en CSS selon la taille des cartes
   const desc = document.createElement("p");
   desc.className = "creation-desc";
-  desc.textContent = previewText(creation.description, APERCU_MAX_LONGUEUR);
+  desc.textContent = creation.description;
 
   const btn = document.createElement("button");
   btn.type = "button";
@@ -765,9 +848,10 @@ function buildFact(iconSvg, text) {
 
 function buildLinkedWorks(ids) {
   if (!Array.isArray(ids) || typeof CREATIONS === "undefined") return null;
+  const published = getPublishedCreations();
   const found = ids
-    .map((id) => CREATIONS.find((c) => c.id === id))
-    .filter((c) => c && c.images && c.images.length > 0);
+    .map((id) => published.find((c) => c.id === id))
+    .filter(Boolean);
   if (found.length === 0) return null;
 
   const box = document.createElement("div");
@@ -974,8 +1058,13 @@ function renderHighlights() {
 
   const isHome = bar.classList.contains("highlights-bar--home");
 
+  // Un repère impossible à calculer donne "" : on n'affiche pas un chiffre faux.
+  const items = HIGHLIGHTS
+    .map((h) => ({ ...h, value: resolveHighlightValue(h.value) }))
+    .filter((h) => h.value);
+
   bar.innerHTML = "";
-  HIGHLIGHTS.forEach((h, index) => {
+  items.forEach((h, index) => {
     const item = document.createElement("div");
     item.className = "highlight-item";
     if (isHome) {
@@ -996,6 +1085,42 @@ function renderHighlights() {
   });
 
   if (document.getElementById("timeline-container")) initCountUp(bar);
+}
+
+/* Remplace les repères {creations}, {familles} et {mois:<id>} des chiffres
+   clés (voir HIGHLIGHTS dans js/parcours-data.js). Renvoie "" si l'un d'eux
+   ne peut pas être calculé. */
+function resolveHighlightValue(value) {
+  let missing = false;
+  const text = String(value || "").replace(/\{(\w+)(?::([\w-]+))?\}/g, (match, key, arg) => {
+    let result = null;
+    if (key === "creations") result = getPublishedCreations().length || null;
+    if (key === "familles") result = countCreationFamilies() || null;
+    if (key === "mois") result = elapsedSinceStep(arg);
+    if (result === null) missing = true;
+    return String(result);
+  });
+  return missing ? "" : text.trim();
+}
+
+/* Tags qui ne désignent pas une famille de produits (exclus du compte {familles}). */
+const TAGS_HORS_FAMILLES = ["Apprentissage"];
+
+function countCreationFamilies() {
+  const tags = getPublishedCreations().flatMap((c) => c.tags || []);
+  return new Set(tags.filter((t) => !TAGS_HORS_FAMILLES.includes(t))).size;
+}
+
+/* "3 mois", "1 an et 2 mois"… depuis le début de l'étape, plafonné à sa fin. */
+function elapsedSinceStep(id) {
+  if (typeof TIMELINE === "undefined") return null;
+  const step = TIMELINE.find((s) => s.id === id);
+  const range = step && getStepRange(step);
+  if (!range) return null;
+  const nowIdx = currentMonthIndex();
+  if (range.start > nowIdx) return null;
+  const last = range.open ? nowIdx : Math.min(nowIdx, range.end);
+  return formatDuration(Math.max(last - range.start, 1));
 }
 
 /* Compte de 0 à la valeur : "3 ans" -> 0 ans, 1 ans… 3 ans. Le texte final
@@ -1068,20 +1193,18 @@ function dateToNumber(text) {
 }
 
 function getHomeCreations(count) {
-  if (typeof CREATIONS === "undefined" || CREATIONS.length === 0) return [];
-
-  const withPhoto = (c) => c.images && c.images.length > 0;
+  const published = getPublishedCreations(); // les brouillons ne sont jamais mis en avant
+  if (published.length === 0) return [];
 
   if (HOME_FEATURED_IDS.length > 0) {
     return HOME_FEATURED_IDS
-      .map((id) => CREATIONS.find((c) => c.id === id))
-      .filter((c) => c && withPhoto(c))
+      .map((id) => published.find((c) => c.id === id))
+      .filter(Boolean)
       .slice(0, count);
   }
 
-  return CREATIONS
+  return published
     .map((creation, index) => ({ creation, index, score: dateToNumber(creation.date) }))
-    .filter((entry) => withPhoto(entry.creation))
     .sort((a, b) => b.score - a.score || a.index - b.index)
     .slice(0, count)
     .map((entry) => entry.creation);
@@ -1249,6 +1372,13 @@ function usableText(text) {
   return t;
 }
 
+/* Version plus souple pour les champs courts (lignes « technique », bilan) :
+   seulement « rempli et pas un texte provisoire ». */
+function hasText(text) {
+  const t = String(text || "").trim();
+  return t !== "" && !t.includes("///") && !/^à compléter/i.test(t);
+}
+
 function formatDuration(months) {
   const years = Math.floor(months / 12);
   const rest = months % 12;
@@ -1259,11 +1389,9 @@ function formatDuration(months) {
 }
 
 function getProgressPair() {
-  if (typeof CREATIONS === "undefined") return null;
-
-  const entries = CREATIONS
+  const entries = getPublishedCreations()
     .map((creation, index) => ({ creation, index, score: dateToNumber(creation.date) }))
-    .filter((e) => e.score > 0 && e.creation.images && e.creation.images.length > 0);
+    .filter((e) => e.score > 0);
   if (entries.length < 2) return null;
 
   const byId = (id) => entries.find((e) => e.creation.id === id);
@@ -1407,9 +1535,18 @@ function initDetailsModal() {
       .map((img) => `<img src="${img.src}" alt="${img.alt || creation.title}" class="modal-gallery-img">`)
       .join("");
 
-    const techHtml = creation.technique
-      .map((t) => `<li><strong>${t.label} : </strong>${t.value}</li>`)
+    // Les lignes encore vides (ou « À compléter… ») ne sont pas affichées :
+    // un visiteur ne voit jamais un « : » orphelin ni un texte provisoire.
+    const techHtml = (creation.technique || [])
+      .filter((t) => t && hasText(t.value))
+      .map((t) => (hasText(t.label) ? `<li><strong>${t.label} : </strong>${t.value}</li>` : `<li>${t.value}</li>`))
       .join("");
+
+    const reflection = creation.reflection || {};
+    const reflectionLines = [
+      hasText(reflection.positif) ? `<p><strong>Ce qui a fonctionné : </strong>${reflection.positif}</p>` : "",
+      hasText(reflection.axes) ? `<p><strong>À travailler la prochaine fois : </strong>${reflection.axes}</p>` : ""
+    ].join("");
 
     modalContent.innerHTML = `
       <div class="modal-layout">
@@ -1419,12 +1556,12 @@ function initDetailsModal() {
         <div class="modal-text">
           <h2 style="margin-top:0;">${creation.title}</h2>
           <p class="creation-desc">${creation.description}</p>
-          <ul class="tech-list">${techHtml}</ul>
+          ${techHtml ? `<ul class="tech-list">${techHtml}</ul>` : ""}
+          ${reflectionLines ? `
           <div class="creation-reflection" style="margin-top: 20px;">
             <h3>Bilan & axes de progression</h3>
-            <p><strong>Ce qui a fonctionné : </strong>${creation.reflection.positif}</p>
-            <p><strong>À travailler la prochaine fois : </strong>${creation.reflection.axes}</p>
-          </div>
+            ${reflectionLines}
+          </div>` : ""}
         </div>
       </div>
     `;
@@ -1456,11 +1593,15 @@ function initDetailsModal() {
     if (event.key === "Escape") close();
   }
 
+  const published = getPublishedCreations();
+
   document.addEventListener("click", (event) => {
-    const trigger = event.target.closest(".creation-media, .btn-decouvrir");
+    const trigger = event.target.closest(".creation-media, .btn-decouvrir, .creation-card");
     if (trigger) {
-      const creation = CREATIONS.find((c) => c.id === trigger.dataset.creationId);
-      if (creation) open(creation, trigger);
+      const creation = published.find((c) => c.id === trigger.dataset.creationId);
+      // Clic ailleurs sur la carte : au retour, le focus revient sur la photo (un vrai bouton)
+      const focusBack = trigger.matches(".creation-card") ? trigger.querySelector(".creation-media") : trigger;
+      if (creation) open(creation, focusBack || trigger);
       return;
     }
 
@@ -1472,7 +1613,7 @@ function initDetailsModal() {
   // Lien direct depuis l'accueil (creations.html#id) : on ouvre la fiche.
   const hashId = decodeURIComponent(window.location.hash.slice(1));
   if (hashId) {
-    const creation = CREATIONS.find((c) => c.id === hashId);
+    const creation = published.find((c) => c.id === hashId);
     const trigger = document.querySelector(`.creation-media[data-creation-id="${CSS.escape(hashId)}"]`);
     if (creation && trigger) {
       trigger.scrollIntoView({ block: "center" });

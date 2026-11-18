@@ -21,6 +21,15 @@
  *                 s'affiche si l'image ne charge pas.
  * - reflection  : la partie "bilan" — remplace les textes d'exemple par
  *                 ton propre retour d'expérience sur CETTE pièce.
+ * - masquer     : (optionnel) masquer: true cache une création déjà rédigée.
+ *
+ * PUBLICATION AUTOMATIQUE : tant que `description` est vide, la création
+ * n'apparaît NULLE PART sur le site (galerie, compteur, filtres, accueil,
+ * parcours). Tu peux donc ajouter les photos d'abord et rédiger plus tard.
+ * Dans la fiche, les lignes `technique` et le bilan encore vides (ou qui
+ * commencent par « À compléter ») sont simplement sautés.
+ * La liste des créations masquées s'affiche dans la console du navigateur
+ * (F12 > Console) sur la page Créations.
  */
 
 const CREATIONS = [
@@ -73,13 +82,9 @@ const CREATIONS = [
         src: "images/mini_entremets_choc.webp",
         alt: "Focus sur les mini entremets brownies ganache chocolat."
       },
-      {
-        src: "images/brownies.webp",
-        alt: "Focus sur les brownies noix de pécan noisette"
-      },
     ],
     description:
-      "Pour ma deuxième semaine au LHIL, nous étions chargés de préparer les divers buffets destinés au candidat, élèves et jurys présents sur place à l'occasion de la finale des MOF en cuisine, services des arts de la table, sommellerie et barman. Des chaussons au pommes et aux tartes au sucre pour le petit déjeuner jusqu'à de minis entremets et gâteaux de voyage pour le reste de la journée !",
+      "Pour ma deuxième semaine au LHIL, nous étions chargés de préparer les divers buffets destinés aux candidats, élèves et jurys présents sur place à l'occasion de la finale des MOF en cuisine, services des arts de la table, sommellerie et barman. Des chaussons aux pommes et des tartes au sucre pour le petit déjeuner jusqu'aux mini-entremets et gâteaux de voyage pour le reste de la journée !",
     technique: [
       { label: "", value: "" },
       { label: "", value: "" },
@@ -141,7 +146,7 @@ const CREATIONS = [
     ],
     reflection: {
       positif: "La tarte est bien dorée et les pommes ont gardé leur tenue à la cuisson. Le parfum de cannelle et de vanille est présent sans masquer le goût du fruit.",
-      axes: "Je trouve avoir réussi l'ensemble de la recette avec briau. C'est à ce jour mon meilleur fonçage et je suis très content du résultat final, gustativement et visuellement."
+      axes: "Je trouve avoir réussi l'ensemble de la recette avec brio. C'est à ce jour mon meilleur fonçage et je suis très content du résultat final, gustativement et visuellement."
     }
   },
   {
@@ -219,7 +224,7 @@ const CREATIONS = [
   },
   {
     id: "babarhum",
-    title: "Les Baba au Rhum",
+    title: "Les Babas au Rhum",
     tags: ["Apprentissage"],
     date: "septembre 2026",
     images: [
@@ -264,7 +269,7 @@ const CREATIONS = [
     ],
     reflection: {
       positif: "Le contraste entre la crème acidulée et la meringue sucrée est très réussi, et les vagues dorées attirent l'œil.",
-      axes: "J'ai eu beaucoup de mal sur les fonçage des tartelettes. Il faut bien garder à l'esprit de travailler la pâte sucrée rapidement pour ne pas trop chauffer le beurre qui la compose, mais également de ne pas trop la fariner lors de l'abaisse pour ne pas la rendre cassante."
+      axes: "J'ai eu beaucoup de mal sur le fonçage des tartelettes. Il faut bien garder à l'esprit de travailler la pâte sucrée rapidement pour ne pas trop chauffer le beurre qui la compose, mais également de ne pas trop la fariner lors de l'abaisse pour ne pas la rendre cassante."
     }
   },
   {
@@ -314,7 +319,7 @@ const CREATIONS = [
       }
     ],
     description:
-      "Un classique des vitrines de boulangerie-pâtisserie revisité à la noix de coco : un appareil onctueux cuit dans un fond de pâte. L'enjeu est d'obtenir une crème qui tient à la découpe sans être trop ferme, avec un dessus bien coloré..",
+      "Un classique des vitrines de boulangerie-pâtisserie revisité à la noix de coco : un appareil onctueux cuit dans un fond de pâte. L'enjeu est d'obtenir une crème qui tient à la découpe sans être trop ferme, avec un dessus bien coloré.",
     technique: [
       { label: "Fonçage", value: "Fond de pâte foncé et piqué, cuit à blanc pour éviter qu'il ne s'humidifie sous l'appareil." },
       { label: "Appareil", value: "Lait parfumé à la noix de coco, lié aux œufs et à la poudre à crème, pour un appareil lisse et onctueux." },
@@ -360,11 +365,11 @@ const CREATIONS = [
       }
     ],
     description:
-      "Un petit gâteau sec aux amandes, poché en bâtons puis enrobés de chocolat noir tempéré.",
+      "Un petit gâteau sec aux amandes, poché en bâtons puis enrobé de chocolat noir tempéré.",
     technique: [
       { label: "Pochage", value: "Pochage de bâtons de même longueur et de même épaisseur, recouverts d'amandes pour la texture et le visuel." },
       { label: "Cuisson", value: "Cuisson douce pour un biscuit sec et légèrement doré, sans coloration excessive." },
-      { label: "Tempérage", value: "Chocolat noir tempéré pour l'enrobage : il doit être brillant et cassant. pour une tenue parfaite sur les bâtons." }
+      { label: "Tempérage", value: "Chocolat noir tempéré pour l'enrobage : il doit être brillant et cassant, pour une tenue parfaite sur les bâtons." }
     ],
     reflection: {
       positif: "Le chocolat noir est bien tempéré : il est brillant et casse net. Le contraste entre le biscuit aux amandes et l'enrobage est très gourmand.",
@@ -408,7 +413,7 @@ const CREATIONS = [
     ],
     reflection: {
       positif: "J'ai su rapidement maîtriser l'exercice. Mes tartes sont belles et donnent envie d'être dévorées !",
-      axes: "Au début, je mettais un temps fou à finir ce qui m'était demandé. Je ne savais pas trop jauger la quantité de fruit qu'il me fallait pour le détail, donc je coupais les fruits au compte-goutte. Je prenais également trop de temps à réfléchir à l'agencement parfait des fruits. Mon maître d'apprentissage m'a ainsi montré comment faire confiance à sa fibre artistique plutôt qu'à son cerveau pour garnir les tartes rapidement et joliement."
+      axes: "Au début, je mettais un temps fou à finir ce qui m'était demandé. Je ne savais pas trop jauger la quantité de fruit qu'il me fallait pour le détail, donc je coupais les fruits au compte-goutte. Je prenais également trop de temps à réfléchir à l'agencement parfait des fruits. Mon maître d'apprentissage m'a ainsi montré comment faire confiance à sa fibre artistique plutôt qu'à son cerveau pour garnir les tartes rapidement et joliment."
     }
   },
   {
@@ -566,7 +571,7 @@ const CREATIONS = [
   {
     id: "pannacotta",
     title: "La Panna Cotta mûres-myrtilles",
-    tags: ["Verrines & Desserts à l'assiette"],
+    tags: ["Verrines"],
     date: "juillet 2026",
     images: [
       {
@@ -579,7 +584,7 @@ const CREATIONS = [
       }
     ],
     description:
-      "Un dessert à l'assiette jouant sur la légèreté de la crème et l'acidité des fruits rouges. L'enjeu technique réside dans l'obtention d'une texture tremblotante et fondante, sans excès de gélatine.",
+      "Une verrine jouant sur la légèreté de la crème et l'acidité des fruits rouges. L'enjeu technique réside dans l'obtention d'une texture tremblotante et fondante, sans excès de gélatine.",
     technique: [
       { label: "Appareil", value: "Crème infusée et collée avec précision pour éviter une texture caoutchouteuse." },
       { label: "Garniture", value: "Compotée mûres-myrtilles avec un équilibre sucre/acidité maîtrisé." },
@@ -635,8 +640,8 @@ const CREATIONS = [
       { label: "Finition", value: "Lissage net des contours à la spatule coudée. Écriture et détails au cornet."}
     ],
     reflection: {
-      positif: "Gustativement parlant, le layer cake était très harmonieux. Le chocolat blanc et les fruits rouges se marient très bien ensemble. Structurellement, l'entremet était solidement monté et assez compact pour qu'il tienne en place",
-      axes: "Le lissage est à revoir. Par manque de matériel (cercle à entremets, rhodoïd) je n'ai pu assurer un lissage propre. La décoration du layer cake est très pauvre. Une décoration de fruits frais et de chocolat blanc sur le tour aurait été judicieux pour montrer visuellement la composition de l'entremet sans avoir à le découper."
+      positif: "Gustativement parlant, le layer cake était très harmonieux. Le chocolat blanc et les fruits rouges se marient très bien ensemble. Structurellement, l'entremets était solidement monté et assez compact pour qu'il tienne en place.",
+      axes: "Le lissage est à revoir. Par manque de matériel (cercle à entremets, rhodoïd) je n'ai pu assurer un lissage propre. La décoration du layer cake est très pauvre. Une décoration de fruits frais et de chocolat blanc sur le tour aurait été judicieuse pour montrer visuellement la composition de l'entremet sans avoir à le découper."
     }
   }  
 ];

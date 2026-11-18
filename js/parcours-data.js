@@ -44,35 +44,34 @@ const TIMELINE = [
   // ===== ÉTAPES À VENIR (objectifs : dates indicatives) =====
   {
     id: "btm",
-    date: "À partir de 2029",
+    date: "À partir de 2028",
     title: "Le Brevet Technique des Métiers",
     subtitle: "Brevet technique des métiers (BTM) - établissement à définir",
     icon: "diplome",
     tags: ["Formation"],
-    start: "2029-09",
+    start: "2028-09",
     open: true,
     short: "BTM",
     // BROUILLON : à réécrire avec tes mots
     description:
-      "Une fois mes certificats de spécialisation en poche, je vise le brevet technique des métiers pour consolider l'ensemble de mes acquis et atteindre le niveau de maîtrise d'un artisan accompli. La suite reste volontairement ouverte : je préfère bien faire chaque étape avant de me projeter plus loin.",
+      "Une fois mon certificat de spécialisation en poche, je vise le brevet technique des métiers pour consolider l'ensemble de mes acquis et atteindre le niveau de maîtrise d'un artisan accompli. La suite reste volontairement ouverte : je préfère bien faire chaque étape avant de me projeter plus loin.",
     takeaway: "Devenir un artisan complet, capable un jour de diriger un laboratoire et de transmettre à son tour." // BROUILLON
   },
   {
-    id: "cs-paris",
-    date: "2027 - 2029",
-    title: "Les Certificats de Spécialisation à Paris",
-    subtitle: "Dessert de restaurant & pâtisserie de boutique - grandes maisons parisiennes",
+    id: "cs-boutique",
+    date: "2027 - 2028",
+    title: "Le Certificat de Spécialisation Pâtisserie de boutique",
+    subtitle: "CS Pâtisserie de boutique - grande école de pâtisserie, établissement à confirmer",
     icon: "toque",
     tags: ["Formation"],
     start: "2027-09",
-    end: "2029-06",
-    duration: "2 ans",
-    place: "Paris",
+    end: "2028-06",
+    duration: "1 an",
     short: "CS",
     // BROUILLON : à réécrire avec tes mots
     description:
-      "Une fois le CAP en poche, cap sur Paris pour viser de grandes boutiques et emmagasiner un maximum de compétences. Deux spécialisations complémentaires : le dessert de restaurant, pour le dressage et la création à l'assiette, et la pâtisserie de boutique, pour la rigueur, la régularité et le volume.",
-    takeaway: "Me confronter aux meilleures maisons pour apprendre vite, du dessert à l'assiette à la vitrine de boutique." // BROUILLON
+      "Une fois le CAP en poche, je vise une grande école pour préparer le Certificat de Spécialisation Pâtisserie de boutique. Une année pour aller plus loin sur ce que je découvre déjà en apprentissage : la régularité, l'organisation d'une production en volume et le soin de chaque pièce mise en vitrine.",
+    takeaway: "Apprendre auprès des meilleurs pour tenir une vitrine irréprochable, de la première à la dernière pièce." // BROUILLON
   },
   // ===== PRÉSENT ET PASSÉ =====
     {
@@ -180,12 +179,20 @@ const TIMELINE = [
 ];
 
 /**
- * Chiffres clés affichés en haut de la page parcours.html.
- * Purement éditorial (pas de calcul automatique) : mets à jour les
- * valeurs toi-même si ta situation change.
+ * Chiffres clés affichés sur l'accueil ET en haut de parcours.html.
+ *
+ * Tu peux écrire une valeur en dur ("3 ans") ou utiliser un des repères
+ * ci-dessous, recalculés à chaque visite (rien à mettre à jour à la main) :
+ * - {creations}  : nombre de créations publiées (celles dont la description
+ *                  est rédigée, voir js/creations-data.js) ;
+ * - {familles}   : nombre de catégories de créations différentes (tags),
+ *                  sans compter « Apprentissage » ;
+ * - {mois:<id>}  : temps écoulé depuis le début de l'étape <id> du parcours,
+ *                  ex. {mois:apprentissage} -> « 3 mois », puis « 1 an ».
+ * Si un repère ne peut pas être calculé, le chiffre n'est pas affiché.
  */
 const HIGHLIGHTS = [
-  { value: "3 ans", label: "d'expérience terrain en restauration rapide" },
-  { value: "1 an", label: "pour décrocher le CAP pâtissier" },
-  { value: "2 univers", label: "informatique et pâtisserie, une même exigence" }
+  { value: "{creations} créations", label: "documentées, chacune avec son bilan technique" },
+  { value: "{familles} familles", label: "de produits travaillées, du fonçage à l'entremets" },
+  { value: "{mois:apprentissage}", label: "en boutique chez MAËS, du montage à la mise en vitrine" }
 ];
